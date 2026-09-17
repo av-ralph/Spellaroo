@@ -1,0 +1,62 @@
+name: spellaroo
+description: A Grade 5 spelling game - Spell It. Learn It. Master It!
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.4
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^2.6.1
+  hive_flutter: ^1.1.0
+  hive: ^2.2.3
+  flutter_tts: ^4.2.2
+  just_audio: ^0.9.43
+  crypto: ^3.0.6
+  go_router: ^14.8.1
+  google_fonts: ^6.2.1
+
+dev_dependencies:
+  integration_test:
+    sdk: flutter
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/images/Game_Icon.png"
+  min_sdk_android: 21
+  remove_alpha_ios: true # Removed alpha channel for iOS App Store compliance
+
+flutter:
+  uses-material-design: true
+  fonts:
+    - family: Baloo2
+      fonts:
+        - asset: assets/fonts/Baloo2-400.ttf
+          weight: 400
+        - asset: assets/fonts/Baloo2-800.ttf
+          weight: 800
+    - family: Nunito
+      fonts:
+        - asset: assets/fonts/Nunito-400.ttf
+          weight: 400
+        - asset: assets/fonts/Nunito-700.ttf
+          weight: 700
+        - asset: assets/fonts/Nunito-800.ttf
+          weight: 800
+  assets:
+    - assets/data/
+    - assets/sounds/
+    - assets/images/Spellaroo.png
+    - assets/images/Splash.png
+    - assets/images/Character 2.png
+    - assets/images/Character 3.png
+    - assets/images/Character 4.png
+    - assets/images/Character 5.png
+    - assets/images/Character 6.png

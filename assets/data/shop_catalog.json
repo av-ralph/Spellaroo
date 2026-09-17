@@ -1,0 +1,470 @@
+[
+  {
+    "id": 1,
+    "name": "Red Spiky Hair",
+    "category": "hair",
+    "price": 10,
+    "colorName": "red",
+    "description": "Bold and spiky"
+  },
+  {
+    "id": 2,
+    "name": "Golden Curly Hair",
+    "category": "hair",
+    "price": 15,
+    "colorName": "golden",
+    "description": "Curly golden locks"
+  },
+  {
+    "id": 3,
+    "name": "Silver Hair",
+    "category": "hair",
+    "price": 20,
+    "colorName": "silver",
+    "description": "Sleek silver style"
+  },
+  {
+    "id": 4,
+    "name": "Blue Mohawk",
+    "category": "hair",
+    "price": 25,
+    "colorName": "blue",
+    "description": "A wild blue mohawk"
+  },
+  {
+    "id": 5,
+    "name": "Rainbow Hair",
+    "category": "hair",
+    "price": 50,
+    "colorName": "rainbow",
+    "description": "All the colors"
+  },
+  {
+    "id": 6,
+    "name": "Party Hat",
+    "category": "headwear",
+    "price": 10,
+    "colorName": "red",
+    "description": "A fun cone hat"
+  },
+  {
+    "id": 7,
+    "name": "Crown",
+    "category": "headwear",
+    "price": 40,
+    "colorName": "golden",
+    "description": "Fit for royalty"
+  },
+  {
+    "id": 8,
+    "name": "Wizard Hat",
+    "category": "headwear",
+    "price": 35,
+    "colorName": "purple",
+    "description": "Magical and pointy"
+  },
+  {
+    "id": 9,
+    "name": "Baseball Cap",
+    "category": "headwear",
+    "price": 15,
+    "colorName": "blue",
+    "description": "Sporty and cool"
+  },
+  {
+    "id": 10,
+    "name": "Flower Crown",
+    "category": "headwear",
+    "price": 20,
+    "colorName": "pink",
+    "description": "Delicate flowers"
+  },
+  {
+    "id": 11,
+    "name": "Red T-Shirt",
+    "category": "tops",
+    "price": 10,
+    "colorName": "red",
+    "description": "Classic red tee"
+  },
+  {
+    "id": 12,
+    "name": "Blue Hoodie",
+    "category": "tops",
+    "price": 20,
+    "colorName": "blue",
+    "description": "Comfy and warm"
+  },
+  {
+    "id": 13,
+    "name": "Green Jacket",
+    "category": "tops",
+    "price": 25,
+    "colorName": "green",
+    "description": "Adventure ready"
+  },
+  {
+    "id": 14,
+    "name": "Yellow Raincoat",
+    "category": "tops",
+    "price": 30,
+    "colorName": "yellow",
+    "description": "Stay dry in style"
+  },
+  {
+    "id": 15,
+    "name": "Purple Vest",
+    "category": "tops",
+    "price": 15,
+    "colorName": "purple",
+    "description": "Light and flashy"
+  },
+  {
+    "id": 16,
+    "name": "Blue Jeans",
+    "category": "bottoms",
+    "price": 10,
+    "colorName": "denim",
+    "description": "Classic denim"
+  },
+  {
+    "id": 17,
+    "name": "Green Shorts",
+    "category": "bottoms",
+    "price": 12,
+    "colorName": "green",
+    "description": "Cool for summer"
+  },
+  {
+    "id": 18,
+    "name": "Black Pants",
+    "category": "bottoms",
+    "price": 15,
+    "colorName": "black",
+    "description": "Sleek and simple"
+  },
+  {
+    "id": 19,
+    "name": "Rainbow Skirt",
+    "category": "bottoms",
+    "price": 25,
+    "colorName": "rainbow",
+    "description": "Every color"
+  },
+  {
+    "id": 20,
+    "name": "Star Leggings",
+    "category": "bottoms",
+    "price": 20,
+    "colorName": "purple",
+    "description": "Starry night pattern"
+  },
+  {
+    "id": 21,
+    "name": "Red Sneakers",
+    "category": "shoes",
+    "price": 10,
+    "colorName": "red",
+    "description": "Fast and flashy"
+  },
+  {
+    "id": 22,
+    "name": "Blue Boots",
+    "category": "shoes",
+    "price": 15,
+    "colorName": "blue",
+    "description": "Tall and sturdy"
+  },
+  {
+    "id": 23,
+    "name": "Green Sandals",
+    "category": "shoes",
+    "price": 12,
+    "colorName": "green",
+    "description": "Breezy feet"
+  },
+  {
+    "id": 24,
+    "name": "Gold Cleats",
+    "category": "shoes",
+    "price": 30,
+    "colorName": "golden",
+    "description": "Champion shoes"
+  },
+  {
+    "id": 25,
+    "name": "Pink Slippers",
+    "category": "shoes",
+    "price": 8,
+    "colorName": "pink",
+    "description": "Soft and cozy"
+  },
+  {
+    "id": 26,
+    "name": "Round Glasses",
+    "category": "glasses",
+    "price": 10,
+    "colorName": "brown",
+    "description": "Classic round frames"
+  },
+  {
+    "id": 27,
+    "name": "Cool Sunglasses",
+    "category": "glasses",
+    "price": 15,
+    "colorName": "black",
+    "description": "Shade your eyes"
+  },
+  {
+    "id": 28,
+    "name": "Star Glasses",
+    "category": "glasses",
+    "price": 20,
+    "colorName": "golden",
+    "description": "Star-shaped frames"
+  },
+  {
+    "id": 29,
+    "name": "Heart Glasses",
+    "category": "glasses",
+    "price": 20,
+    "colorName": "pink",
+    "description": "See with love"
+  },
+  {
+    "id": 30,
+    "name": "Blue Frames",
+    "category": "glasses",
+    "price": 12,
+    "colorName": "blue",
+    "description": "Bold blue"
+  },
+  {
+    "id": 31,
+    "name": "Silver Necklace",
+    "category": "accessories",
+    "price": 15,
+    "colorName": "silver",
+    "description": "Shiny chain"
+  },
+  {
+    "id": 32,
+    "name": "Red Bow Tie",
+    "category": "accessories",
+    "price": 10,
+    "colorName": "red",
+    "description": "Formal and fun"
+  },
+  {
+    "id": 33,
+    "name": "Gold Watch",
+    "category": "accessories",
+    "price": 25,
+    "colorName": "golden",
+    "description": "Time in style"
+  },
+  {
+    "id": 34,
+    "name": "Green Scarf",
+    "category": "accessories",
+    "price": 12,
+    "colorName": "green",
+    "description": "Cozy neck warmer"
+  },
+  {
+    "id": 35,
+    "name": "Purple Wand",
+    "category": "accessories",
+    "price": 30,
+    "colorName": "purple",
+    "description": "Magical sparkle"
+  },
+  {
+    "id": 36,
+    "name": "Backpack",
+    "category": "bags",
+    "price": 15,
+    "colorName": "blue",
+    "description": "Carry your stuff"
+  },
+  {
+    "id": 37,
+    "name": "Treasure Chest",
+    "category": "bags",
+    "price": 30,
+    "colorName": "golden",
+    "description": "Hold your treasures"
+  },
+  {
+    "id": 38,
+    "name": "Magic Bag",
+    "category": "bags",
+    "price": 25,
+    "colorName": "purple",
+    "description": "Bottomless storage"
+  },
+  {
+    "id": 39,
+    "name": "Star Sparkles",
+    "category": "effects",
+    "price": 20,
+    "colorName": "golden",
+    "description": "Sparkly stars around you"
+  },
+  {
+    "id": 40,
+    "name": "Fire Aura",
+    "category": "effects",
+    "price": 35,
+    "colorName": "red",
+    "description": "Fiery glow"
+  },
+  {
+    "id": 41,
+    "name": "Ice Frost",
+    "category": "effects",
+    "price": 35,
+    "colorName": "blue",
+    "description": "Icy chill effect"
+  },
+  {
+    "id": 42,
+    "name": "Galaxy Swirl",
+    "category": "effects",
+    "price": 45,
+    "colorName": "galaxy",
+    "description": "Cosmic dust"
+  },
+  {
+    "id": 43,
+    "name": "Rainbow Halo",
+    "category": "special",
+    "price": 50,
+    "colorName": "rainbow",
+    "description": "All-color aura"
+  },
+  {
+    "id": 44,
+    "name": "Golden Crown",
+    "category": "special",
+    "price": 60,
+    "colorName": "golden",
+    "description": "Legendary headpiece"
+  },
+  {
+    "id": 45,
+    "name": "Shadow Cloak",
+    "category": "special",
+    "price": 55,
+    "colorName": "shadow",
+    "description": "Dark and mysterious"
+  },
+  {
+    "id": 1001,
+    "name": "Ocean Hoodie",
+    "category": "tops",
+    "price": 0,
+    "colorName": "blue",
+    "isStarter": true,
+    "description": "Your free starter wardrobe"
+  },
+  {
+    "id": 1002,
+    "name": "Berry Hoodie",
+    "category": "tops",
+    "price": 0,
+    "colorName": "purple",
+    "isStarter": true,
+    "description": "Your free starter wardrobe"
+  },
+  {
+    "id": 1003,
+    "name": "Sunshine Hoodie",
+    "category": "tops",
+    "price": 0,
+    "colorName": "yellow",
+    "isStarter": true,
+    "description": "Your free starter wardrobe"
+  },
+  {
+    "id": 1004,
+    "name": "Ocean Shorts",
+    "category": "bottoms",
+    "price": 0,
+    "colorName": "blue",
+    "isStarter": true,
+    "description": "Your free starter wardrobe"
+  },
+  {
+    "id": 1005,
+    "name": "Forest Shorts",
+    "category": "bottoms",
+    "price": 0,
+    "colorName": "green",
+    "isStarter": true,
+    "description": "Your free starter wardrobe"
+  },
+  {
+    "id": 1006,
+    "name": "Berry Shorts",
+    "category": "bottoms",
+    "price": 0,
+    "colorName": "purple",
+    "isStarter": true,
+    "description": "Your free starter wardrobe"
+  },
+  {
+    "id": 1007,
+    "name": "Star Headband",
+    "category": "headbands",
+    "price": 0,
+    "colorName": "golden",
+    "isStarter": true,
+    "description": "Your free starter wardrobe"
+  },
+  {
+    "id": 1008,
+    "name": "Pink Bow Headband",
+    "category": "headbands",
+    "price": 0,
+    "colorName": "pink",
+    "isStarter": true,
+    "description": "Your free starter wardrobe"
+  },
+  {
+    "id": 1009,
+    "name": "Ocean Headband",
+    "category": "headbands",
+    "price": 0,
+    "colorName": "blue",
+    "isStarter": true,
+    "description": "Your free starter wardrobe"
+  },
+  {
+    "id": 1010,
+    "name": "Spelling Star Necklace",
+    "category": "accessories",
+    "price": 0,
+    "colorName": "golden",
+    "isStarter": true,
+    "description": "Your free starter wardrobe"
+  },
+  {
+    "id": 1011,
+    "name": "Berry Bow Tie",
+    "category": "accessories",
+    "price": 0,
+    "colorName": "purple",
+    "isStarter": true,
+    "description": "Your free starter wardrobe"
+  },
+  {
+    "id": 1012,
+    "name": "Ocean Bow Tie",
+    "category": "accessories",
+    "price": 0,
+    "colorName": "blue",
+    "isStarter": true,
+    "description": "Your free starter wardrobe"
+  }
+]

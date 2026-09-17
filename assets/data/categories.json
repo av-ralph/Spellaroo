@@ -1,0 +1,6 @@
+[
+  {"id": 1, "name": "Easy", "icon": "🌟"},
+  {"id": 2, "name": "Medium", "icon": "🔥"},
+  {"id": 3, "name": "Hard", "icon": "💎"},
+  {"id": 4, "name": "Random", "icon": "🎲"}
+]

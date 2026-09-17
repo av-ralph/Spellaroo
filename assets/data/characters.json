@@ -1,0 +1,50 @@
+[
+  {
+    "key": "kangaroo",
+    "bodyColor": "#D9945F",
+    "bodyDark": "#B9713A",
+    "earShape": "tall",
+    "hasTail": true,
+    "description": "Bouncy and energetic"
+  },
+  {
+    "key": "cat",
+    "bodyColor": "#E8A855",
+    "bodyDark": "#C4823A",
+    "earShape": "triangle",
+    "hasTail": true,
+    "description": "Curious and playful"
+  },
+  {
+    "key": "bunny",
+    "bodyColor": "#F4E4D6",
+    "bodyDark": "#E0C7AE",
+    "earShape": "long",
+    "hasTail": false,
+    "description": "Quick and adorable"
+  },
+  {
+    "key": "bear",
+    "bodyColor": "#8B5A3C",
+    "bodyDark": "#6B4128",
+    "earShape": "round",
+    "hasTail": false,
+    "description": "Strong and cuddly"
+  },
+  {
+    "key": "panda",
+    "bodyColor": "#FAFAFA",
+    "bodyDark": "#2B2B2B",
+    "earShape": "round",
+    "hasTail": false,
+    "description": "Gentle and wise"
+  },
+  {
+    "key": "fox",
+    "bodyColor": "#E07A3E",
+    "bodyDark": "#B85A26",
+    "earShape": "triangle",
+    "hasTail": true,
+    "description": "Clever and swift"
+  }
+]
