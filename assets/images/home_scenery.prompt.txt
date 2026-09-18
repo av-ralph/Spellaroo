@@ -1,0 +1,3 @@
+Generated with built-in image_gen; input: assets/images/home_adventure.png.
+
+Use case: precise-object-edit. Edit target: provided Spellaroo home background. Remove ONLY the central kangaroo and everything it wears, including tail, ears, shoes/feet, hoodie and backpack. Fill its silhouette seamlessly with the distant mountain/lake/forest scenery, and restore the flat foreground stone ledge under its feet. Keep absolutely everything else unchanged: canvas dimensions 842x1867, Spellaroo logo, blue header, wood slogan and lettering, directional signs on left, landscape, foliage, colors, framing. No characters, animals, people or new UI. The central stone should remain empty so a live game character can stand there.

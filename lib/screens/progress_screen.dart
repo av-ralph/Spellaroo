@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../services/audio_service.dart';
 import '../services/storage_service.dart';
 import '../widgets/carnival.dart';
 import '../config/theme.dart';
@@ -23,7 +24,10 @@ class ProgressScreen extends StatelessWidget {
         title: const Text('YOUR PROGRESS'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go('/home'),
+          onPressed: () {
+            AudioService.playClick();
+            context.go('/home');
+          },
         ),
       ),
       body: SafeArea(

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/app_provider.dart';
+import '../services/audio_service.dart';
 import '../utils/hash_utils.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -338,7 +339,10 @@ class _Toggle extends StatelessWidget {
             ),
           ),
           GestureDetector(
-            onTap: onToggle,
+            onTap: () {
+              AudioService.playClick();
+              onToggle();
+            },
             child: Container(
               width: 48,
               height: 28,

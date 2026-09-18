@@ -228,12 +228,19 @@ class StorageService {
   }
 
   static Future<void> recordMissedWord(int wordId) async {
+    await recordMissedWords([wordId]);
+  }
+
+  static Future<void> recordMissedWords(List<int> wordIds) async {
+    if (wordIds.isEmpty) return;
     final list = getMissedWords();
-    final idx = list.indexWhere((w) => w.wordId == wordId);
-    if (idx >= 0) {
-      list[idx] = list[idx].copyWith(missCount: list[idx].missCount + 1);
-    } else {
-      list.add(MissedWord(wordId: wordId));
+    for (final wordId in wordIds) {
+      final idx = list.indexWhere((w) => w.wordId == wordId);
+      if (idx >= 0) {
+        list[idx] = list[idx].copyWith(missCount: list[idx].missCount + 1);
+      } else {
+        list.add(MissedWord(wordId: wordId));
+      }
     }
     await _missedWordsBox.put('words', list.map((e) => e.toJson()).toList());
   }

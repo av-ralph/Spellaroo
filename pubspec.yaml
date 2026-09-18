@@ -53,6 +53,8 @@ flutter:
   assets:
     - assets/data/
     - assets/sounds/
+    - assets/sounds/bgm/
+    - assets/sounds/sfx/
     - assets/images/Spellaroo.png
     - assets/images/Splash.png
     - assets/images/Character 2.png
@@ -60,3 +62,6 @@ flutter:
     - assets/images/Character 4.png
     - assets/images/Character 5.png
     - assets/images/Character 6.png
+    - assets/images/Homescreen_BG.png
+    - assets/images/home_scenery.png
+

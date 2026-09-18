@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/app_provider.dart';
+import '../services/audio_service.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -104,7 +105,10 @@ class _SplashScreenState extends ConsumerState<SplashScreen> {
                       child: SizedBox(
                         width: double.infinity,
                         child: FilledButton(
-                          onPressed: () => context.go('/profile/create'),
+                          onPressed: () {
+                            AudioService.playClick();
+                            context.go('/profile/create');
+                          },
                           style: FilledButton.styleFrom(
                             backgroundColor: const Color(0xFF388E3C),
                             foregroundColor: Colors.white,

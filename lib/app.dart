@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'config/theme.dart';
+import 'services/storage_service.dart';
 import 'screens/splash_screen.dart';
 import 'screens/profile_create_screen.dart';
 import 'screens/character_select_screen.dart';
@@ -32,10 +33,10 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       GoRoute(path: '/tutorial', builder: (c, s) => const TutorialScreen()),
       ShellRoute(
         builder: (context, state, child) => Scaffold(
-          extendBody: false,
+          extendBody: state.uri.path == '/home',
           body: child,
           bottomNavigationBar: const Padding(
-            padding: EdgeInsets.fromLTRB(18, 0, 18, 12),
+            padding: EdgeInsets.fromLTRB(7, 0, 7, 12),
             child: BottomNav(),
           ),
         ),
@@ -70,7 +71,16 @@ final goRouterProvider = Provider<GoRouter>((ref) {
         path: '/play/:category/:levelId',
         builder: (c, s) {
           final category = s.pathParameters['category'] ?? 'easy';
-          final levelId = int.tryParse(s.pathParameters['levelId'] ?? '') ?? 0;
+          final levelId = int.tryParse(s.pathParameters['levelId'] ?? '');
+          if (levelId == null || levelId < 1) {
+            final firstLevel =
+                StorageService.allLevels
+                    .where((l) => l.category == category)
+                    .toList()
+                  ..sort((a, b) => a.id.compareTo(b.id));
+            final fallbackId = firstLevel.isNotEmpty ? firstLevel.first.id : 1;
+            return GameScreen(category: category, levelId: fallbackId);
+          }
           return GameScreen(category: category, levelId: levelId);
         },
       ),

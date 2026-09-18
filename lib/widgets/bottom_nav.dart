@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../services/audio_service.dart';
 
 class BottomNav extends StatelessWidget {
   const BottomNav({super.key});
@@ -58,11 +59,11 @@ class BottomNav extends StatelessWidget {
     return SafeArea(
       top: false,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(14, 0, 14, 8),
+        padding: const EdgeInsets.fromLTRB(0, 0, 0, 8),
         child: DecoratedBox(
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.72),
-            borderRadius: BorderRadius.circular(30),
+            color: const Color(0xFFFFFCF2),
+            borderRadius: BorderRadius.circular(32),
             border: Border.all(
               color: const Color(0xFFFFD580).withValues(alpha: 0.7),
               width: 1.2,
@@ -86,7 +87,10 @@ class BottomNav extends StatelessWidget {
                 return Expanded(
                   child: GestureDetector(
                     behavior: HitTestBehavior.opaque,
-                    onTap: () => context.go(_paths[index]),
+                    onTap: () {
+                      AudioService.playClick();
+                      context.go(_paths[index]);
+                    },
                     child: AnimatedContainer(
                       duration: const Duration(milliseconds: 220),
                       curve: Curves.easeOutCubic,
@@ -94,7 +98,7 @@ class BottomNav extends StatelessWidget {
                       margin: const EdgeInsets.symmetric(horizontal: 3),
                       decoration: BoxDecoration(
                         color: isSelected
-                            ? const Color(0xFFFFE8B0)
+                            ? const Color(0xFFFFE590)
                             : Colors.transparent,
                         borderRadius: BorderRadius.circular(22),
                       ),
@@ -110,7 +114,7 @@ class BottomNav extends StatelessWidget {
                               color: isSelected
                                   ? const Color(0xFF5A3216)
                                   : const Color(0xFF7A6D63),
-                              size: 24,
+                              size: 27,
                             ),
                           ),
                           const SizedBox(height: 4),
@@ -118,8 +122,11 @@ class BottomNav extends StatelessWidget {
                             duration: const Duration(milliseconds: 180),
                             curve: Curves.easeOutCubic,
                             style: TextStyle(
+                              fontFamily: 'Nunito',
                               fontSize: isSelected ? 11 : 10,
-                              fontWeight: isSelected ? FontWeight.w800 : FontWeight.w700,
+                              fontWeight: isSelected
+                                  ? FontWeight.w800
+                                  : FontWeight.w700,
                               color: isSelected
                                   ? const Color(0xFF5A3216)
                                   : const Color(0xFF7A6D63),

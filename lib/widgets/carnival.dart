@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../config/theme.dart';
+import '../services/audio_service.dart';
 
 class CarnivalRibbon extends StatelessWidget {
   const CarnivalRibbon(this.text, {super.key});
@@ -76,7 +77,10 @@ class CarnivalButton extends StatelessWidget {
             ),
           ),
           child: InkWell(
-            onTap: onPressed,
+            onTap: () {
+              AudioService.playClick();
+              onPressed?.call();
+            },
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
               child: Row(

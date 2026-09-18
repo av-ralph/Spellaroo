@@ -39,7 +39,7 @@ class AppConstants {
   }
 
   static String randomEncouragement() {
-    final idx = DateTime.now().millisecondsSinceEpoch % encouragements.length;
+    final idx = DateTime.now().microsecondsSinceEpoch % encouragements.length;
     return encouragements[idx];
   }
 }

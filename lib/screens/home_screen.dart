@@ -1,166 +1,223 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/app_provider.dart';
-import '../services/storage_service.dart';
-import '../widgets/coin_badge.dart';
+import '../services/audio_service.dart';
 import '../widgets/character_portrait.dart';
 import '../widgets/carnival.dart';
+import '../widgets/adventure_home.dart';
 import '../config/theme.dart';
 
-class HomeScreen extends ConsumerWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final profile = ref.watch(appProvider).profile;
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends ConsumerState<HomeScreen> {
+  @override
+  void initState() {
+    super.initState();
+    AudioService.playBgm('assets/sounds/bgm/main_menu.mp3');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final state = ref.watch(appProvider);
+    final profile = state.profile;
+    debugPrint('HomeScreen build: coins=${profile?.coins}');
     if (profile == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
-    final completed = StorageService.getLevelProgressList()
-        .where((p) => p.completed)
-        .length;
-    return Scaffold(
-      extendBody: true,
-      appBar: AppBar(
-        title: const Text('SPELLAROO'),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 16),
-            child: CoinBadge(coins: profile.coins),
-          ),
-        ],
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light.copyWith(
+        statusBarColor: Colors.transparent,
       ),
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
-          children: [
-            const CarnivalPennants(),
-            const CarnivalRibbon('Spell it. Learn it. Master it!'),
-            Text(
-              'Welcome, ${profile.nickname}!',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headlineSmall,
-            ),
-            const SizedBox(height: 8),
-            SizedBox(
-              height: 185,
-              child: CharacterPortrait(
-                characterKey: profile.characterKey ?? 'kangaroo',
-                equippedByCategory: ref.watch(appProvider).equippedByCategory,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Center(
-              child: Text(
-                '★ $completed levels completed',
-                style: const TextStyle(
-                  fontWeight: FontWeight.w800,
-                  color: AppTheme.brown,
-                ),
-              ),
-            ),
-            const SizedBox(height: 18),
-            CarnivalButton(
-              label: "Let's play",
-              icon: Icons.play_arrow_rounded,
-              onPressed: () => context.go('/play'),
-            ),
-            const SizedBox(height: 12),
-            LayoutBuilder(
-              builder: (context, constraints) => Wrap(
-                spacing: 12,
-                runSpacing: 12,
-                children:
-                    [
-                      (
-                        label: 'Shop',
-                        path: '/shop',
-                        icon: Icons.shopping_bag,
-                        color: AppTheme.orange,
-                      ),
-                      (
-                        label: 'Character',
-                        path: '/character/customize',
-                        icon: Icons.pets,
-                        color: AppTheme.coral,
-                      ),
-                      (
-                        label: 'Progress',
-                        path: '/progress',
-                        icon: Icons.bar_chart,
-                        color: AppTheme.green,
-                      ),
-                      (
-                        label: 'Parent',
-                        path: '/parent',
-                        icon: Icons.family_restroom,
-                        color: AppTheme.purple,
-                      ),
-                    ].asMap().entries.map((entry) {
-                      final index = entry.key;
-                      final item = entry.value;
-                      final isCharacter = item.label == 'Character';
-
-                      final container = isCharacter
-                          ? Container(
+      child: Scaffold(
+        backgroundColor: const Color(0xFF073E3D),
+        body: LayoutBuilder(
+          builder: (context, viewport) {
+            final width = math.min(viewport.maxWidth, 600.0);
+            // Keep the reference composition on phones; scroll on short displays.
+            final height = math.max(viewport.maxHeight, width * 2.05);
+            return Center(
+              child: SizedBox(
+                width: width,
+                child: SingleChildScrollView(
+                  child: SizedBox(
+                    height: height,
+                    child: Stack(
+                      children: [
+                        Positioned.fill(
+                          child: Image.asset(
+                            'assets/images/home_scenery.png',
+                            fit: BoxFit.fill,
+                            excludeFromSemantics: true,
+                          ),
+                        ),
+                        // Use the wardrobe renderer so character changes and
+                        // equipped items always follow the saved app state.
+                        Positioned(
+                          left: width * .27,
+                          right: width * .27,
+                          top: height * .291,
+                          height: height * .239,
+                          child: CharacterPortrait(
+                            key: const ValueKey('home-character'),
+                            characterKey: profile.characterKey ?? 'kangaroo',
+                            equippedByCategory: state.equippedByCategory,
+                          ),
+                        ),
+                        Positioned(
+                          left: width * .12,
+                          right: width * .12,
+                          top: height * .208,
+                          height: height * .081,
+                          child: AdventureGreeting(profile.nickname),
+                        ),
+                        Positioned(
+                          right: width * .035,
+                          top: math.max(
+                            MediaQuery.paddingOf(context).top,
+                            height * .043,
+                          ),
+                          width: width * .16,
+                          height: width * .077,
+                          child: Semantics(
+                            label: '${profile.coins} coins',
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 7,
+                              ),
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(22),
-                                boxShadow: [
+                                borderRadius: BorderRadius.circular(30),
+                                gradient: const LinearGradient(
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
+                                  colors: [
+                                    Color(0xFFFFEB39),
+                                    Color(0xFFFFB900),
+                                  ],
+                                ),
+                                border: Border.all(
+                                  color: const Color(0xFFFFD83D),
+                                  width: 2,
+                                ),
+                                boxShadow: const [
                                   BoxShadow(
-                                    color: item.color.withValues(alpha: 0.38),
-                                    blurRadius: 18,
-                                    offset: const Offset(0, 7),
+                                    color: Color(0x55005871),
+                                    blurRadius: 12,
                                   ),
                                 ],
                               ),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(22),
-                                child: CarnivalButton(
-                                  label: item.label,
-                                  icon: item.icon,
-                                  color: item.color,
-                                  onPressed: () => context.push(item.path),
-                                ),
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.pets,
+                                    color: const Color(0xFFEAA014),
+                                    size: width * .038,
+                                  ),
+                                  const SizedBox(width: 5),
+                                  Expanded(
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        '${profile.coins}',
+                                        style: const TextStyle(
+                                          fontSize: 19,
+                                          fontWeight: FontWeight.w800,
+                                          color: Color(0xFF633919),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            )
-                          : CarnivalButton(
-                              label: item.label,
-                              icon: item.icon,
-                              color: item.color,
-                              onPressed: () => context.push(item.path),
-                            );
-
-                      return TweenAnimationBuilder<double>(
-                        tween: Tween(begin: 0.0, end: 1.0),
-                        duration: Duration(milliseconds: 260 + (index * 90)),
-                        curve: Curves.easeOutCubic,
-                        builder: (context, value, child) => Opacity(
-                          opacity: value,
-                          child: Transform.translate(
-                            offset: Offset(0, (1 - value) * 10),
-                            child: Transform.scale(
-                              scale: 0.96 + (value * 0.04),
-                              child: child,
                             ),
                           ),
                         ),
-                        child: SizedBox(
-                          width: constraints.maxWidth < 340
-                              ? constraints.maxWidth
-                              : (constraints.maxWidth - 12) / 2,
-                          child: container,
+                        Positioned(
+                          left: width * .067,
+                          right: width * .067,
+                          top: height * .536,
+                          height: height * .081,
+                          child: AdventureButton(
+                            label: 'Let’s play',
+                            icon: Icons.play_arrow_rounded,
+                            primary: true,
+                            colors: const [
+                              Color(0xFF69D75B),
+                              Color(0xFF19AE54),
+                              Color(0xFF00973F),
+                            ],
+                            onPressed: () => context.go('/play'),
+                          ),
                         ),
-                      );
-                    }).toList(),
+                        ...[
+                          (
+                            'Shop',
+                            '/shop',
+                            Icons.shopping_bag_rounded,
+                            [
+                              const Color(0xFFFFD141),
+                              const Color(0xFFFFA400),
+                              const Color(0xFFFF8A00),
+                            ],
+                          ),
+                          (
+                            'Character',
+                            '/character/customize',
+                            Icons.pets,
+                            [
+                              const Color(0xFFFF91A0),
+                              const Color(0xFFFF5871),
+                              const Color(0xFFFF3957),
+                            ],
+                          ),
+                          (
+                            'Progress',
+                            '/progress',
+                            Icons.bar_chart_rounded,
+                            [
+                              const Color(0xFF45DAB5),
+                              const Color(0xFF08BDA2),
+                              const Color(0xFF009E91),
+                            ],
+                          ),
+                          (
+                            'Parent',
+                            '/parent',
+                            Icons.family_restroom_rounded,
+                            [
+                              const Color(0xFFB38AFF),
+                              const Color(0xFF9361E7),
+                              const Color(0xFF7144D2),
+                            ],
+                          ),
+                        ].asMap().entries.map((entry) {
+                          final item = entry.value;
+                          return Positioned(
+                            left: width * (entry.key.isEven ? .044 : .51),
+                            width: width * .446,
+                            top: height * (.634 + (entry.key ~/ 2) * .082),
+                            height: height * .068,
+                            child: AdventureButton(
+                              label: item.$1,
+                              icon: item.$3,
+                              colors: item.$4,
+                              onPressed: () => context.push(item.$2),
+                            ),
+                          );
+                        }),
+                      ],
+                    ),
+                  ),
+                ),
               ),
-            ),
-            const SizedBox(height: 18),
-            const Text(
-              'Every word is a little win.',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: AppTheme.brown),
-            ),
-          ],
+            );
+          },
         ),
       ),
     );

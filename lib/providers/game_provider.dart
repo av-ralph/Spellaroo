@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/word.dart';
 import '../services/storage_service.dart';
@@ -134,6 +135,7 @@ class GameNotifier extends StateNotifier<GameState> {
 
     if (correct) {
       final coins = AppConstants.coinsForAttempt(state.category, newAttempts);
+      debugPrint('checkSpelling: CORRECT! category=${state.category} attempt=$newAttempts coins=$coins totalCoins=${state.totalCoins + coins}');
       state = state.copyWith(
         status: GameStatus.correct,
         correctCount: state.correctCount + 1,

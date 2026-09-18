@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/app_provider.dart';
 import '../providers/shop_provider.dart';
+import '../services/audio_service.dart';
 import '../services/storage_service.dart';
 
 import '../widgets/character_painter.dart';
@@ -20,6 +21,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
   String _selectedCategory = 'headwear';
 
   IconData _categoryIcon(String category) => switch (category) {
+    'headbands' => Icons.workspace_premium,
     'headwear' => Icons.school,
     'tops' => Icons.checkroom,
     'bottoms' => Icons.dry_cleaning,
@@ -104,7 +106,10 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 4),
                     child: GestureDetector(
-                      onTap: () => setState(() => _selectedCategory = cat),
+                      onTap: () {
+                        AudioService.playClick();
+                        setState(() => _selectedCategory = cat);
+                      },
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 16,
@@ -166,6 +171,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
 
                         return GestureDetector(
                           onTap: () async {
+                            AudioService.playClick();
                             if (!isOwned) {
                               final success = await ref
                                   .read(shopProvider.notifier)

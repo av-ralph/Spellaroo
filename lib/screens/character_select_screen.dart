@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/app_provider.dart';
+import '../services/audio_service.dart';
 import '../widgets/character_portrait.dart';
 
 class CharacterSelectScreen extends ConsumerStatefulWidget {
@@ -12,17 +13,58 @@ class CharacterSelectScreen extends ConsumerStatefulWidget {
       _CharacterSelectScreenState();
 }
 
-class _CharacterSelectScreenState extends ConsumerState<CharacterSelectScreen> {
+class _CharacterSelectScreenState extends ConsumerState<CharacterSelectScreen>
+    with SingleTickerProviderStateMixin {
   String? _previewKey;
   bool _saving = false;
+  late AnimationController _previewAnimController;
+  late Animation<double> _previewScale;
+
   static const _characters = [
-    (key: 'kangaroo', name: 'Roo'),
-    (key: 'cat', name: 'Whiskers'),
-    (key: 'bunny', name: 'Hops'),
-    (key: 'bear', name: 'Barnaby'),
-    (key: 'panda', name: 'Mochi'),
-    (key: 'fox', name: 'Foxy'),
+    (key: 'kangaroo', name: 'Roo', desc: 'Bouncy and energetic', emoji: '🦘'),
+    (key: 'cat', name: 'Whiskers', desc: 'Curious and playful', emoji: '🐱'),
+    (key: 'bunny', name: 'Hops', desc: 'Quick and adorable', emoji: '🐰'),
+    (key: 'bear', name: 'Barnaby', desc: 'Strong and cuddly', emoji: '🐻'),
+    (key: 'panda', name: 'Mochi', desc: 'Gentle and wise', emoji: '🐼'),
+    (key: 'fox', name: 'Foxy', desc: 'Clever and swift', emoji: '🦊'),
   ];
+
+  static const _cardGradients = [
+    [Color(0xFFFFCC80), Color(0xFFFF9800)],
+    [Color(0xFFB39DDB), Color(0xFF7E57C2)],
+    [Color(0xFF80DEEA), Color(0xFF00ACC1)],
+    [Color(0xFFA5D6A7), Color(0xFF43A047)],
+    [Color(0xFFF48FB1), Color(0xFFE91E63)],
+    [Color(0xFFFFAB91), Color(0xFFE64A19)],
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _previewAnimController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 350),
+    );
+    _previewScale = CurvedAnimation(
+      parent: _previewAnimController,
+      curve: Curves.easeOutBack,
+    );
+    _previewAnimController.forward();
+  }
+
+  @override
+  void dispose() {
+    _previewAnimController.dispose();
+    super.dispose();
+  }
+
+  void _selectCharacter(String key) {
+    AudioService.playClick();
+    if (_previewKey == key) return;
+    _previewAnimController.reset();
+    setState(() => _previewKey = key);
+    _previewAnimController.forward();
+  }
 
   Future<void> _confirm() async {
     if (_previewKey == null || _saving) return;
@@ -54,182 +96,310 @@ class _CharacterSelectScreenState extends ConsumerState<CharacterSelectScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final name = _previewKey == null
+    final selected = _previewKey == null
         ? null
-        : _characters.firstWhere((c) => c.key == _previewKey).name;
+        : _characters.firstWhere((c) => c.key == _previewKey);
+    final screenWidth = MediaQuery.sizeOf(context).width;
+    final isCompact = screenWidth < 400;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('CHOOSE CHARACTER')),
       body: Container(
-        decoration: const BoxDecoration(
+        decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFFFFF8E1), Color(0xFFFFF8E1)],
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
+            colors: [
+              _previewKey != null
+                  ? _cardGradients[
+                      _characters.indexWhere((c) => c.key == _previewKey)]
+                      [0]
+                      .withValues(alpha: 0.15)
+                  : const Color(0xFFFFF8E1),
+              const Color(0xFFFFF8E1),
+            ],
           ),
         ),
         child: SafeArea(
           child: Column(
             children: [
-              Expanded(
-                child: CustomScrollView(
-                  slivers: [
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 24, 20, 16),
-                        child: Column(
-                          children: [
-                            const Text(
-                              'Choose Your Character',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontSize: 28,
-                                fontFamily: 'Baloo2',
-                                fontWeight: FontWeight.w800,
-                                color: Color(0xFF553522),
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            const Text(
-                              'Who will be your spelling buddy?',
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: Color(0xFF8D6E63)),
-                            ),
-                            const SizedBox(height: 20),
-                            Container(
-                              height: 220,
-                              width: 280,
-                              clipBehavior: Clip.antiAlias,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFFFFDF3),
-                                border: Border.all(
-                                  color: const Color(0xFFE7CD86),
-                                  width: 2,
-                                ),
-                                borderRadius: BorderRadius.circular(24),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(12),
-                                child: CharacterPortrait(
-                                  characterKey: _previewKey ?? 'kangaroo',
-                                ),
-                              ),
-                            ),
-                            const SizedBox(height: 12),
-                            Text(
-                              name ?? 'Meet your spelling team',
-                              style: const TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.w800,
-                                color: Color(0xFF553522),
-                              ),
-                            ),
-                          ],
+              // Top bar
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
+                child: Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        AudioService.playClick();
+                        context.go('/home');
+                      },
+                      icon: const Icon(Icons.arrow_back_rounded),
+                      color: const Color(0xFF553522),
+                    ),
+                    const Expanded(
+                      child: Text(
+                        'CHOOSE YOUR BUDDY',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontFamily: 'Baloo2',
+                          fontWeight: FontWeight.w800,
+                          fontSize: 18,
+                          color: Color(0xFF553522),
+                          letterSpacing: 0.5,
                         ),
                       ),
                     ),
-                    SliverPadding(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-                      sliver: SliverGrid(
-                        gridDelegate:
-                            const SliverGridDelegateWithMaxCrossAxisExtent(
-                              maxCrossAxisExtent: 180,
-                              mainAxisSpacing: 12,
-                              crossAxisSpacing: 12,
-                              childAspectRatio: 0.78,
-                            ),
-                        delegate: SliverChildBuilderDelegate((context, index) {
-                          final character = _characters[index];
-                          final selected = _previewKey == character.key;
-                          return Semantics(
-                            selected: selected,
-                            button: true,
-                            label: character.name,
-                            child: Material(
-                              color: selected
-                                  ? const Color(0xFFFFEDAF)
-                                  : Colors.white,
-                              borderRadius: BorderRadius.circular(18),
-                              clipBehavior: Clip.antiAlias,
-                              child: InkWell(
-                                onTap: _saving
-                                    ? null
-                                    : () => setState(
-                                        () => _previewKey = character.key,
-                                      ),
-                                child: Column(
-                                  children: [
-                                    Expanded(
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(8),
-                                        child: CharacterPortrait(
-                                          characterKey: character.key,
-                                        ),
-                                      ),
-                                    ),
-                                    Padding(
-                                      padding: const EdgeInsets.fromLTRB(
-                                        4,
-                                        0,
-                                        4,
-                                        10,
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          if (selected)
-                                            const Icon(
-                                              Icons.check_circle,
-                                              size: 16,
-                                              color: Color(0xFF0956A8),
-                                            ),
-                                          Flexible(
-                                            child: Text(
-                                              character.name,
-                                              textAlign: TextAlign.center,
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.w800,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        }, childCount: _characters.length),
-                      ),
-                    ),
+                    const SizedBox(width: 48),
                   ],
                 ),
               ),
+              // Preview area
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 8),
+                      // Character preview
+                      ScaleTransition(
+                        scale: _previewScale,
+                        child: Container(
+                          height: 200,
+                          width: 240,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(28),
+                            border: Border.all(
+                              color: _previewKey != null
+                                  ? _cardGradients[_characters.indexWhere(
+                                          (c) => c.key == _previewKey)]
+                                      [1]
+                                  : const Color(0xFFE7CD86),
+                              width: 2.5,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: (_previewKey != null
+                                        ? _cardGradients[_characters.indexWhere(
+                                            (c) => c.key == _previewKey)][1]
+                                        : const Color(0xFFE7CD86))
+                                    .withValues(alpha: 0.2),
+                                blurRadius: 20,
+                                offset: const Offset(0, 8),
+                              ),
+                            ],
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(26),
+                            child: CharacterPortrait(
+                              characterKey: _previewKey ?? 'kangaroo',
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      // Name + personality tag
+                      AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 250),
+                        child: Column(
+                          key: ValueKey(_previewKey),
+                          children: [
+                            Text(
+                              selected?.name ?? 'Who will it be?',
+                              style: TextStyle(
+                                fontFamily: 'Baloo2',
+                                fontWeight: FontWeight.w800,
+                                fontSize: 24,
+                                color: _previewKey != null
+                                    ? const Color(0xFF553522)
+                                    : const Color(0xFF8D6E63),
+                              ),
+                            ),
+                            if (selected != null) ...[
+                              const SizedBox(height: 4),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 14,
+                                  vertical: 5,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: _cardGradients[_characters.indexWhere(
+                                          (c) => c.key == _previewKey)]
+                                      [0]
+                                      .withValues(alpha: 0.25),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  '${selected.emoji}  ${selected.desc}',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 13,
+                                    color: _cardGradients[_characters.indexWhere(
+                                            (c) => c.key == _previewKey)]
+                                        [1],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      // Character grid
+                      GridView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: isCompact ? 3 : 3,
+                          mainAxisSpacing: 12,
+                          crossAxisSpacing: 12,
+                          childAspectRatio: 0.82,
+                        ),
+                        itemCount: _characters.length,
+                        itemBuilder: (context, index) {
+                          final c = _characters[index];
+                          final isSelected = _previewKey == c.key;
+                          final gradient = _cardGradients[index];
+
+                          return GestureDetector(
+                            onTap: () => _selectCharacter(c.key),
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 250),
+                              curve: Curves.easeOut,
+                              decoration: BoxDecoration(
+                                color: isSelected
+                                    ? gradient[0].withValues(alpha: 0.15)
+                                    : Colors.white,
+                                borderRadius: BorderRadius.circular(18),
+                                border: Border.all(
+                                  color: isSelected
+                                      ? gradient[1]
+                                      : const Color(0xFFE7CD86),
+                                  width: isSelected ? 2.5 : 1.5,
+                                ),
+                                boxShadow: [
+                                  if (isSelected)
+                                    BoxShadow(
+                                      color: gradient[1].withValues(alpha: 0.25),
+                                      blurRadius: 12,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                ],
+                              ),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    flex: 3,
+                                    child: Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                        6, 6, 6, 0,
+                                      ),
+                                      child: Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          CharacterPortrait(
+                                            characterKey: c.key,
+                                          ),
+                                          if (isSelected)
+                                            Positioned(
+                                              top: 4,
+                                              right: 4,
+                                              child: Container(
+                                                width: 24,
+                                                height: 24,
+                                                decoration: BoxDecoration(
+                                                  color: gradient[1],
+                                                  shape: BoxShape.circle,
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: gradient[1]
+                                                          .withValues(alpha: 0.4),
+                                                      blurRadius: 6,
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: const Icon(
+                                                  Icons.check,
+                                                  size: 14,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 1,
+                                    child: Center(
+                                      child: Text(
+                                        c.name,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w800,
+                                          fontSize: isCompact ? 12 : 13,
+                                          color: isSelected
+                                              ? const Color(0xFF553522)
+                                              : const Color(0xFF6D4C2E),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                  ),
+                ),
+              ),
+              // Confirm button
               Padding(
-                padding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+                padding: const EdgeInsets.fromLTRB(24, 8, 24, 24),
                 child: SizedBox(
                   width: double.infinity,
+                  height: 56,
                   child: FilledButton(
-                    onPressed: _previewKey == null || _saving ? null : _confirm,
+                    onPressed: _previewKey == null || _saving
+                        ? null
+                        : () {
+                            AudioService.playButton();
+                            _confirm();
+                          },
                     style: FilledButton.styleFrom(
                       backgroundColor: const Color(0xFF388E3C),
                       foregroundColor: Colors.white,
                       disabledBackgroundColor: const Color(0xFFE4DAC0),
                       disabledForegroundColor: const Color(0xFF776A54),
-                      minimumSize: const Size(0, 52),
-                    ),
-                    child: Text(
-                      _saving
-                          ? 'Saving...'
-                          : name == null
-                          ? 'Choose a buddy'
-                          : 'Choose $name',
-                      style: const TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w800,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      side: const BorderSide(
+                        color: Color(0xFF28682B),
+                        width: 2,
                       ),
                     ),
+                    child: _saving
+                        ? const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                              strokeWidth: 2.5,
+                            ),
+                          )
+                        : Text(
+                            selected == null
+                                ? 'Choose a buddy'
+                                : 'Play with ${selected.name}',
+                            style: const TextStyle(
+                              fontFamily: 'Baloo2',
+                              fontSize: 18,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
                   ),
                 ),
               ),
@@ -240,4 +410,3 @@ class _CharacterSelectScreenState extends ConsumerState<CharacterSelectScreen> {
     );
   }
 }
-

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/game_provider.dart';
+import '../services/audio_service.dart';
 
 class ResultScreen extends ConsumerWidget {
   final bool won;
@@ -84,6 +85,7 @@ class ResultScreen extends ConsumerWidget {
                 height: 56,
                 child: ElevatedButton(
                   onPressed: () {
+                    AudioService.playClick();
                     ref.read(gameProvider.notifier).resetGame();
                     context.go('/home');
                   },
@@ -108,6 +110,7 @@ class ResultScreen extends ConsumerWidget {
               const SizedBox(height: 12),
               TextButton(
                 onPressed: () {
+                  AudioService.playClick();
                   ref.read(gameProvider.notifier).resetGame();
                   context.go('/play/$difficulty');
                 },

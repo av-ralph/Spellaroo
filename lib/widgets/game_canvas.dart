@@ -23,6 +23,8 @@ class GameCanvas extends StatefulWidget {
 class _GameCanvasState extends State<GameCanvas> {
   late List<LetterNode> nodes;
   double radius = 130;
+  Offset? _dragPosition;
+  bool _isDragging = false;
 
   @override
   void initState() {
@@ -38,6 +40,49 @@ class _GameCanvasState extends State<GameCanvas> {
 
   void _buildNodes() {
     nodes = GameService.buildLetterNodes(widget.word, radius: radius);
+  }
+
+  String? _hitTest(Offset position, List<LetterNode> positionedNodes, Offset center) {
+    for (final node in positionedNodes) {
+      final pos = Offset(center.dx + node.x, center.dy + node.y);
+      final distance = (position - pos).distance;
+      if (distance < 30) {
+        return node.id;
+      }
+    }
+    return null;
+  }
+
+  void _onPanStart(DragStartDetails details, List<LetterNode> positionedNodes, Offset center) {
+    if (!widget.enabled) return;
+    final hitId = _hitTest(details.localPosition, positionedNodes, center);
+    if (hitId != null) {
+      setState(() {
+        _isDragging = true;
+        _dragPosition = details.localPosition;
+      });
+      if (!widget.selectedIds.contains(hitId)) {
+        widget.onLetterTap(hitId);
+      }
+    }
+  }
+
+  void _onPanUpdate(DragUpdateDetails details, List<LetterNode> positionedNodes, Offset center) {
+    if (!widget.enabled || !_isDragging) return;
+    setState(() {
+      _dragPosition = details.localPosition;
+    });
+    final hitId = _hitTest(details.localPosition, positionedNodes, center);
+    if (hitId != null && !widget.selectedIds.contains(hitId)) {
+      widget.onLetterTap(hitId);
+    }
+  }
+
+  void _onPanEnd(DragEndDetails details) {
+    setState(() {
+      _isDragging = false;
+      _dragPosition = null;
+    });
   }
 
   @override
@@ -59,36 +104,38 @@ class _GameCanvasState extends State<GameCanvas> {
             .toList();
         final center = Offset(size / 2, size / 2);
 
-        return SizedBox(
-          width: size,
-          height: size,
-          child: Stack(
-            clipBehavior: Clip.none,
-            children: [
-              // Connection lines
-              CustomPaint(
-                size: Size(size, size),
-                painter: _ConnectionPainter(
-                  nodes: positionedNodes,
-                  selectedIds: widget.selectedIds,
-                  center: center,
+        return GestureDetector(
+          onPanStart: (details) => _onPanStart(details, positionedNodes, center),
+          onPanUpdate: (details) => _onPanUpdate(details, positionedNodes, center),
+          onPanEnd: _onPanEnd,
+          child: SizedBox(
+            width: size,
+            height: size,
+            child: Stack(
+              clipBehavior: Clip.none,
+              children: [
+                // Connection lines and drag line
+                CustomPaint(
+                  size: Size(size, size),
+                  painter: _ConnectionPainter(
+                    nodes: positionedNodes,
+                    selectedIds: widget.selectedIds,
+                    center: center,
+                    dragPosition: _dragPosition,
+                    isDragging: _isDragging,
+                  ),
                 ),
-              ),
-              // Letter nodes
-              ...positionedNodes.map((node) {
-                final pos = Offset(center.dx + node.x, center.dy + node.y);
-                final isSelected = widget.selectedIds.contains(node.id);
-                final selectionOrder = widget.selectedIds.indexOf(node.id);
+                // Letter nodes
+                ...positionedNodes.map((node) {
+                  final pos = Offset(center.dx + node.x, center.dy + node.y);
+                  final isSelected = widget.selectedIds.contains(node.id);
+                  final selectionOrder = widget.selectedIds.indexOf(node.id);
 
-                return Positioned(
-                  left: pos.dx - 24,
-                  top: pos.dy - 24,
-                  child: GestureDetector(
-                    key: ValueKey('letter-${node.id}'),
-                    onTap: widget.enabled
-                        ? () => widget.onLetterTap(node.id)
-                        : null,
+                  return Positioned(
+                    left: pos.dx - 24,
+                    top: pos.dy - 24,
                     child: AnimatedContainer(
+                      key: ValueKey('letter-${node.id}'),
                       duration: const Duration(milliseconds: 200),
                       width: 48,
                       height: 48,
@@ -153,10 +200,10 @@ class _GameCanvasState extends State<GameCanvas> {
                         ],
                       ),
                     ),
-                  ),
-                );
-              }),
-            ],
+                  );
+                }),
+              ],
+            ),
           ),
         );
       },
@@ -168,29 +215,49 @@ class _ConnectionPainter extends CustomPainter {
   final List<LetterNode> nodes;
   final List<String> selectedIds;
   final Offset center;
+  final Offset? dragPosition;
+  final bool isDragging;
 
   _ConnectionPainter({
     required this.nodes,
     required this.selectedIds,
     required this.center,
+    this.dragPosition,
+    this.isDragging = false,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
-    if (selectedIds.length < 2) return;
-
-    final paint = Paint()
+    final connectionPaint = Paint()
       ..color = const Color(0xFFF97316).withValues(alpha: 0.6)
       ..strokeWidth = 3
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
 
-    for (var i = 0; i < selectedIds.length - 1; i++) {
-      final fromNode = nodes.firstWhere((n) => n.id == selectedIds[i]);
-      final toNode = nodes.firstWhere((n) => n.id == selectedIds[i + 1]);
-      final fromPos = Offset(center.dx + fromNode.x, center.dy + fromNode.y);
-      final toPos = Offset(center.dx + toNode.x, center.dy + toNode.y);
-      canvas.drawLine(fromPos, toPos, paint);
+    // Draw connection lines between selected letters
+    if (selectedIds.length >= 2) {
+      for (var i = 0; i < selectedIds.length - 1; i++) {
+        final fromNode = nodes.firstWhere((n) => n.id == selectedIds[i]);
+        final toNode = nodes.firstWhere((n) => n.id == selectedIds[i + 1]);
+        final fromPos = Offset(center.dx + fromNode.x, center.dy + fromNode.y);
+        final toPos = Offset(center.dx + toNode.x, center.dy + toNode.y);
+        canvas.drawLine(fromPos, toPos, connectionPaint);
+      }
+    }
+
+    // Draw drag line from last selected letter to drag position
+    if (isDragging && dragPosition != null && selectedIds.isNotEmpty) {
+      final lastNode = nodes.firstWhere((n) => n.id == selectedIds.last);
+      final lastPos = Offset(center.dx + lastNode.x, center.dy + lastNode.y);
+      
+      final dragLinePaint = Paint()
+        ..color = const Color(0xFFF97316).withValues(alpha: 0.4)
+        ..strokeWidth = 2
+        ..style = PaintingStyle.stroke
+        ..strokeCap = StrokeCap.round
+        ..strokeCap = StrokeCap.round;
+      
+      canvas.drawLine(lastPos, dragPosition!, dragLinePaint);
     }
   }
 
@@ -198,5 +265,7 @@ class _ConnectionPainter extends CustomPainter {
   bool shouldRepaint(covariant _ConnectionPainter old) =>
       old.selectedIds != selectedIds ||
       old.center != center ||
-      old.nodes != nodes;
+      old.nodes != nodes ||
+      old.dragPosition != dragPosition ||
+      old.isDragging != isDragging;
 }

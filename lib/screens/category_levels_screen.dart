@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../services/audio_service.dart';
 import '../services/storage_service.dart';
 import '../widgets/carnival.dart';
 import '../config/theme.dart';
@@ -20,7 +21,10 @@ class CategoryLevelsScreen extends StatelessWidget {
         title: Text('${category.toUpperCase()} LEVELS'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go('/play'),
+          onPressed: () {
+            AudioService.playClick();
+            context.go('/play');
+          },
         ),
       ),
       body: SafeArea(
@@ -66,7 +70,10 @@ class CategoryLevelsScreen extends StatelessWidget {
                     child: InkWell(
                       key: ValueKey('level-${level.id}'),
                       onTap: unlocked
-                          ? () => context.go('/play/$category/${level.id}')
+                          ? () {
+                              AudioService.playClick();
+                              context.go('/play/$category/${level.id}');
+                            }
                           : null,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,

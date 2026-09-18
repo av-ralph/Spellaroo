@@ -31,60 +31,103 @@ class _GameScreenState extends ConsumerState<GameScreen> {
   }
 
   void _start() {
+    AudioService.playBgm('assets/sounds/bgm/gameplay.mp3');
     _saving = null;
     _missed.clear();
     ref.read(gameProvider.notifier).startGame(widget.category, widget.levelId);
   }
 
-  void _leave() => context.go(
-    widget.category == 'random' ? '/home' : '/play/${widget.category}',
-  );
-
-  Future<void> _save(GameState state) async {
-    for (final id in _missed.toList()) {
-      await StorageService.recordMissedWord(id);
-      _missed.remove(id);
-    }
-    if (widget.category != 'random') {
-      final old = StorageService.getLevelProgress(widget.levelId);
-      final passed = state.accuracy >= 0.8;
-      final stars = passed
-          ? (state.accuracy >= 0.95
-                ? 3
-                : state.accuracy >= 0.85
-                ? 2
-                : 1)
-          : 0;
-      final best = max(old?.accuracy ?? 0.0, state.accuracy);
-      await StorageService.saveLevelProgress(
-        LevelProgress(
-          levelId: widget.levelId,
-          completed: passed || (old?.completed ?? false),
-          unlocked: true,
-          stars: max(old?.stars ?? 0, stars),
-          accuracy: best,
-          wordsAttempted: state.words.length,
-          wordsCorrect: max(old?.wordsCorrect ?? 0, state.correctCount),
+  void _leave() {
+    final state = ref.read(gameProvider);
+    final inProgress = state.status == GameStatus.playing ||
+        state.status == GameStatus.wrong;
+    if (inProgress) {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Leave game?'),
+          content: const Text('Your progress and coins in this session will be lost.'),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(ctx).pop(),
+              child: const Text('Stay'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(ctx).pop();
+                AudioService.stopBgm();
+                context.go(
+                  widget.category == 'random' ? '/home' : '/play/${widget.category}',
+                );
+              },
+              child: const Text('Leave', style: TextStyle(color: Colors.red)),
+            ),
+          ],
         ),
       );
-      if (passed) {
-        final levels =
-            StorageService.allLevels
-                .where((l) => l.category == widget.category)
-                .toList()
-              ..sort((a, b) => a.id.compareTo(b.id));
-        final index = levels.indexWhere((l) => l.id == widget.levelId);
-        if (index >= 0 && index + 1 < levels.length) {
-          final nextId = levels[index + 1].id;
-          final next =
-              StorageService.getLevelProgress(nextId) ??
-              LevelProgress(levelId: nextId);
-          await StorageService.saveLevelProgress(next.copyWith(unlocked: true));
+    } else {
+      AudioService.stopBgm();
+      context.go(
+        widget.category == 'random' ? '/home' : '/play/${widget.category}',
+      );
+    }
+  }
+
+  Future<void> _save(GameState state) async {
+    final appNotifier = ref.read(appProvider.notifier);
+    final missedToSave = _missed.toList();
+    try {
+      await StorageService.recordMissedWords(missedToSave);
+      _missed.clear();
+    } catch (e) {
+      debugPrint('Failed to record missed words: $e');
+    }
+    if (widget.category != 'random') {
+      try {
+        final old = StorageService.getLevelProgress(widget.levelId);
+        final passed = state.accuracy >= 0.8;
+        final stars = passed
+            ? (state.accuracy >= 0.95
+                  ? 3
+                  : state.accuracy >= 0.85
+                  ? 2
+                  : 1)
+            : 0;
+        final best = max(old?.accuracy ?? 0.0, state.accuracy);
+        await StorageService.saveLevelProgress(
+          LevelProgress(
+            levelId: widget.levelId,
+            completed: passed || (old?.completed ?? false),
+            unlocked: true,
+            stars: max(old?.stars ?? 0, stars),
+            accuracy: best,
+            wordsAttempted: state.words.length,
+            wordsCorrect: max(old?.wordsCorrect ?? 0, state.correctCount),
+          ),
+        );
+        if (passed) {
+          final levels =
+              StorageService.allLevels
+                  .where((l) => l.category == widget.category)
+                  .toList()
+                ..sort((a, b) => a.id.compareTo(b.id));
+          final index = levels.indexWhere((l) => l.id == widget.levelId);
+          if (index >= 0 && index + 1 < levels.length) {
+            final nextId = levels[index + 1].id;
+            final next =
+                StorageService.getLevelProgress(nextId) ??
+                LevelProgress(levelId: nextId);
+            await StorageService.saveLevelProgress(next.copyWith(unlocked: true));
+          }
         }
+      } catch (e) {
+        debugPrint('Failed to save level progress: $e');
       }
     }
     if (state.totalCoins > 0) {
-      await ref.read(appProvider.notifier).addCoins(state.totalCoins);
+      debugPrint('_save: adding ${state.totalCoins} coins');
+      await appNotifier.addCoins(state.totalCoins);
+      debugPrint('_save: coins added successfully');
     }
   }
 
@@ -93,13 +136,19 @@ class _GameScreenState extends ConsumerState<GameScreen> {
     final state = ref.watch(gameProvider);
     ref.listen<GameState>(gameProvider, (previous, next) {
       if (previous?.status == next.status) return;
-      if (next.status == GameStatus.correct) AudioService.playCorrect();
+      if (next.status == GameStatus.correct) {
+        AudioService.playCorrect();
+        _missed.remove(next.currentWord!.id);
+      }
       if (next.status == GameStatus.wrong ||
           next.status == GameStatus.revealed) {
         AudioService.playWrong();
         _missed.add(next.currentWord!.id);
       }
-      if (next.status == GameStatus.complete) _saving = _save(next);
+      if (next.status == GameStatus.complete) {
+        AudioService.stopBgm();
+        _saving = _save(next);
+      }
     });
     if (state.status == GameStatus.loading) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
@@ -159,10 +208,19 @@ class _GameScreenState extends ConsumerState<GameScreen> {
               ),
               const SizedBox(height: 28),
               FilledButton(
-                onPressed: () => ref.read(gameProvider.notifier).beginPlaying(),
+                onPressed: () {
+                  AudioService.playButton();
+                  ref.read(gameProvider.notifier).beginPlaying();
+                },
                 child: const Text('Start'),
               ),
-              TextButton(onPressed: _leave, child: const Text('Back')),
+              TextButton(
+                onPressed: () {
+                  AudioService.playClick();
+                  _leave();
+                },
+                child: const Text('Back'),
+              ),
             ],
           ),
         ),
@@ -181,7 +239,10 @@ class _GameScreenState extends ConsumerState<GameScreen> {
       backgroundColor: const Color(0xFFFFF8E1),
       appBar: AppBar(
         leading: IconButton(
-          onPressed: _leave,
+          onPressed: () {
+            AudioService.playClick();
+            _leave();
+          },
           icon: const Icon(Icons.arrow_back),
         ),
         title: Text('Word ${state.wordIndex + 1} of ${state.words.length}'),
@@ -272,6 +333,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                       Expanded(
                         child: FilledButton(
                           onPressed: () {
+                            AudioService.playButton();
                             final game = ref.read(gameProvider.notifier);
                             if (retry) {
                               game.beginPlaying();

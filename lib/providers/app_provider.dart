@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/profile.dart';
 import '../models/inventory_entry.dart';
@@ -85,16 +86,22 @@ class AppNotifier extends StateNotifier<AppState> {
   }
 
   Future<void> addCoins(int amount) async {
-    if (state.profile == null) return;
+    if (state.profile == null) {
+      debugPrint('addCoins: profile is null, aborting');
+      return;
+    }
+    debugPrint('addCoins: current coins=${state.profile!.coins}, adding=$amount');
     final updated = state.profile!.copyWith(
       coins: state.profile!.coins + amount,
     );
     await StorageService.saveProfile(updated);
     state = state.copyWith(profile: updated);
+    debugPrint('addCoins: saved and updated, new coins=${state.profile!.coins}');
   }
 
   Future<void> spendCoins(int amount) async {
     if (state.profile == null) return;
+    if (state.profile!.coins < amount) return;
     final updated = state.profile!.copyWith(
       coins: state.profile!.coins - amount,
     );

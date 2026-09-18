@@ -2,6 +2,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/app_provider.dart';
+import '../services/audio_service.dart';
 import '../services/storage_service.dart';
 import '../utils/hash_utils.dart';
 
@@ -52,7 +53,10 @@ class _ParentDashboardScreenState extends ConsumerState<ParentDashboardScreen> {
         appBar: AppBar(
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
-            onPressed: () => context.go('/home'),
+            onPressed: () {
+              AudioService.playClick();
+              context.go('/home');
+            },
           ),
           title: const Text('Parent Dashboard'),
           backgroundColor: const Color(0xFF187EB2),
@@ -165,7 +169,10 @@ class _ParentDashboardScreenState extends ConsumerState<ParentDashboardScreen> {
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go('/home'),
+          onPressed: () {
+            AudioService.playClick();
+            context.go('/home');
+          },
         ),
         title: const Text(
           'Parent Dashboard',

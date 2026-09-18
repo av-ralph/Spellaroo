@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/app_provider.dart';
 import '../providers/shop_provider.dart';
+import '../services/audio_service.dart';
 import '../services/storage_service.dart';
 import '../widgets/character_portrait.dart';
 import '../widgets/character_painter.dart';
@@ -72,7 +73,10 @@ class _CharacterCustomizeScreenState
         title: const Text('MY WARDROBE'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go('/home'),
+          onPressed: () {
+            AudioService.playClick();
+            context.go('/home');
+          },
         ),
         actions: [
           Padding(
