@@ -16,11 +16,15 @@ workflows:
       - name: Get Flutter packages
         script: |
           flutter pub get
+          flutter precache --ios
       - name: Build Android APK
         script: |
           flutter build apk --release --android-skip-build-dependency-validation
       - name: Build iOS IPA
         script: |
+          # Force generation of iOS config files
+          flutter build ios --config-only
+          
           # Build iOS. If signing is configured in Codemagic UI, this will produce an IPA.
           flutter build ios --release --no-codesign
           

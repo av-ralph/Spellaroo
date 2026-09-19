@@ -1,5 +1,15 @@
 # The path to the 'Generated.xcconfig' and 'generated_helper.rb'
-require File.expand_path(File.join('..', 'Flutter', 'generated_helper.rb'), __FILE__)
+# We use a rescue block to handle cases where the file isn't generated yet
+begin
+  require File.expand_path(File.join('..', 'Flutter', 'generated_helper.rb'), __FILE__)
+rescue LoadError
+  # Fallback for newer Flutter versions where it might be in 'ephemeral'
+  begin
+    require File.expand_path(File.join('..', 'Flutter', 'ephemeral', 'generated_helper.rb'), __FILE__)
+  rescue LoadError
+    puts "Warning: generated_helper.rb not found. Run 'flutter pub get' first."
+  end
+end
 
 # Uncomment this line to define a global platform for your project
 platform :ios, '13.0'
