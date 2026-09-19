@@ -69,52 +69,58 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           backgroundColor: const Color(0xFF073E3D),
           body: LayoutBuilder(
             builder: (context, viewport) {
-              final width = math.min(viewport.maxWidth, 600.0);
+              final screenWidth = viewport.maxWidth;
+              final contentWidth = math.min(screenWidth, 600.0);
               // Keep the reference composition on phones; scroll on short displays.
-              final height = math.max(viewport.maxHeight, width * 2.05);
-              return Center(
-                child: SizedBox(
-                  width: width,
-                  child: SingleChildScrollView(
+              final height = math.max(viewport.maxHeight, contentWidth * 2.05);
+              return Stack(
+                children: [
+                  // Background fills the entire screen on all devices.
+                  Positioned.fill(
+                    child: Image.asset(
+                      'assets/images/home_scenery.png',
+                      fit: BoxFit.cover,
+                      alignment: Alignment.center,
+                      excludeFromSemantics: true,
+                    ),
+                  ),
+                  // Interactive content is centered and constrained to 600px.
+                  Center(
                     child: SizedBox(
-                      height: height,
-                      child: Stack(
-                        children: [
-                          Positioned.fill(
-                            child: Image.asset(
-                              'assets/images/home_scenery.png',
-                              fit: BoxFit.fill,
-                              excludeFromSemantics: true,
-                            ),
-                          ),
-                          // Use the wardrobe renderer so character changes and
-                          // equipped items always follow the saved app state.
+                      width: contentWidth,
+                      child: SingleChildScrollView(
+                        child: SizedBox(
+                          height: height,
+                          child: Stack(
+                            children: [
+                              // Use the wardrobe renderer so character changes and
+                              // equipped items always follow the saved app state.
+                              Positioned(
+                                left: contentWidth * .27,
+                                right: contentWidth * .27,
+                                top: height * .291,
+                                height: height * .239,
+                                child: CharacterPortrait(
+                                  key: const ValueKey('home-character'),
+                                  characterKey: profile.characterKey ?? 'kangaroo',
+                                  equippedByCategory: state.equippedByCategory,
+                                ),
+                              ),
+                              Positioned(
+                                left: contentWidth * .12,
+                                right: contentWidth * .12,
+                                top: height * .208,
+                                height: height * .081,
+                                child: AdventureGreeting(profile.nickname),
+                              ),
                           Positioned(
-                            left: width * .27,
-                            right: width * .27,
-                            top: height * .291,
-                            height: height * .239,
-                            child: CharacterPortrait(
-                              key: const ValueKey('home-character'),
-                              characterKey: profile.characterKey ?? 'kangaroo',
-                              equippedByCategory: state.equippedByCategory,
-                            ),
-                          ),
-                          Positioned(
-                            left: width * .12,
-                            right: width * .12,
-                            top: height * .208,
-                            height: height * .081,
-                            child: AdventureGreeting(profile.nickname),
-                          ),
-                          Positioned(
-                            right: width * .035,
+                            right: contentWidth * .035,
                             top: math.max(
                               MediaQuery.paddingOf(context).top,
                               height * .043,
                             ),
-                            width: width * .16,
-                            height: width * .077,
+                            width: contentWidth * .16,
+                            height: contentWidth * .077,
                             child: Semantics(
                               label: '${profile.coins} coins',
                               child: Container(
@@ -147,7 +153,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                     Icon(
                                       Icons.pets,
                                       color: const Color(0xFFEAA014),
-                                      size: width * .038,
+                                      size: contentWidth * .038,
                                     ),
                                     const SizedBox(width: 5),
                                     Expanded(
@@ -169,8 +175,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                             ),
                           ),
                           Positioned(
-                            left: width * .067,
-                            right: width * .067,
+                            left: contentWidth * .067,
+                            right: contentWidth * .067,
                             top: height * .536,
                             height: height * .081,
                             child: AdventureButton(
@@ -229,8 +235,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           ].asMap().entries.map((entry) {
                             final item = entry.value;
                             return Positioned(
-                              left: width * (entry.key.isEven ? .044 : .51),
-                              width: width * .446,
+                              left: contentWidth * (entry.key.isEven ? .044 : .51),
+                              width: contentWidth * .446,
                               top: height * (.634 + (entry.key ~/ 2) * .082),
                               height: height * .068,
                               child: AdventureButton(
@@ -241,11 +247,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                               ),
                             );
                           }),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                         ],
+                       ),
+                     ),
+                   ),
+                 ),
+                 ),
+                ],
               );
             },
           ),
