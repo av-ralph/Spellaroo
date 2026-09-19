@@ -78,7 +78,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   // Background fills the entire screen on all devices.
                   Positioned.fill(
                     child: Image.asset(
-                      'assets/images/home_scenery.png',
+                      screenWidth > 600
+                          ? 'assets/images/tablet_home_scenery.png'
+                          : 'assets/images/home_scenery.png',
                       fit: BoxFit.cover,
                       alignment: Alignment.center,
                       excludeFromSemantics: true,
