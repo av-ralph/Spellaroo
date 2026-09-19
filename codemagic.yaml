@@ -22,23 +22,30 @@ workflows:
       - name: Build iOS IPA
         script: |
           # Build iOS. If signing is configured in Codemagic UI, this will produce an IPA.
-          # If not, it will build the framework/app bundle.
           flutter build ios --release --no-codesign
           
-          # Manually create a zip of the .app if no IPA is produced (useful for debugging)
+          # Manually create a zip of the .app if no IPA is produced (fallback for unsigned builds)
           BUILD_DIR="build/ios/iphoneos"
           if [ -d "$BUILD_DIR/Runner.app" ]; then
             cd "$BUILD_DIR"
             mkdir -p Payload
             cp -r Runner.app Payload/
             zip -r Spellaroo.ipa Payload
-            mv Spellaroo.ipa ../../Spellaroo-unsigned.ipa
+            # Move to a predictable location for the artifact uploader
+            mv Spellaroo.ipa ../../../Spellaroo-unsigned.ipa
             cd ../../..
+          else
+            echo "Error: Runner.app not found in $BUILD_DIR"
+            exit 1
           fi
+      - name: List Artifacts (Debug)
+        script: |
+          find . -name "*.apk"
+          find . -name "*.ipa"
     artifacts:
-      - build/app/outputs/flutter-apk/Spellaroo.apk
-      - build/*.ipa
-      - build/ios/ipa/*.ipa
+      - "**/Spellaroo.apk"
+      - "**/app-release.apk"
+      - "**/*.ipa"
     publishing:
       email:
         recipients:
