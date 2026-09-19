@@ -1,3 +1,4 @@
+import '../widgets/adventure_scaffold.dart';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -227,7 +228,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 class CategorySelectScreen extends StatelessWidget {
   const CategorySelectScreen({super.key});
   @override
-  Widget build(BuildContext context) => Scaffold(
+  Widget build(BuildContext context) => AdventureScaffold(
     appBar: AppBar(
       title: const Text('CHOOSE A CATEGORY'),
       leading: IconButton(

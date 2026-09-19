@@ -42,7 +42,11 @@ class _GameCanvasState extends State<GameCanvas> {
     nodes = GameService.buildLetterNodes(widget.word, radius: radius);
   }
 
-  String? _hitTest(Offset position, List<LetterNode> positionedNodes, Offset center) {
+  String? _hitTest(
+    Offset position,
+    List<LetterNode> positionedNodes,
+    Offset center,
+  ) {
     for (final node in positionedNodes) {
       final pos = Offset(center.dx + node.x, center.dy + node.y);
       final distance = (position - pos).distance;
@@ -53,7 +57,11 @@ class _GameCanvasState extends State<GameCanvas> {
     return null;
   }
 
-  void _onPanStart(DragStartDetails details, List<LetterNode> positionedNodes, Offset center) {
+  void _onPanStart(
+    DragStartDetails details,
+    List<LetterNode> positionedNodes,
+    Offset center,
+  ) {
     if (!widget.enabled) return;
     final hitId = _hitTest(details.localPosition, positionedNodes, center);
     if (hitId != null) {
@@ -67,7 +75,11 @@ class _GameCanvasState extends State<GameCanvas> {
     }
   }
 
-  void _onPanUpdate(DragUpdateDetails details, List<LetterNode> positionedNodes, Offset center) {
+  void _onPanUpdate(
+    DragUpdateDetails details,
+    List<LetterNode> positionedNodes,
+    Offset center,
+  ) {
     if (!widget.enabled || !_isDragging) return;
     setState(() {
       _dragPosition = details.localPosition;
@@ -105,8 +117,10 @@ class _GameCanvasState extends State<GameCanvas> {
         final center = Offset(size / 2, size / 2);
 
         return GestureDetector(
-          onPanStart: (details) => _onPanStart(details, positionedNodes, center),
-          onPanUpdate: (details) => _onPanUpdate(details, positionedNodes, center),
+          onPanStart: (details) =>
+              _onPanStart(details, positionedNodes, center),
+          onPanUpdate: (details) =>
+              _onPanUpdate(details, positionedNodes, center),
           onPanEnd: _onPanEnd,
           child: SizedBox(
             width: size,
@@ -114,6 +128,27 @@ class _GameCanvasState extends State<GameCanvas> {
             child: Stack(
               clipBehavior: Clip.none,
               children: [
+                Positioned.fill(
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: const RadialGradient(
+                          colors: [Color(0xEEFFFFFF), Color(0xFFDDF2E8)],
+                        ),
+                        border: Border.all(color: Colors.white, width: 4),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color(0x120F6B69),
+                            blurRadius: 20,
+                            offset: Offset(0, 7),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
                 // Connection lines and drag line
                 CustomPaint(
                   size: Size(size, size),
@@ -141,21 +176,25 @@ class _GameCanvasState extends State<GameCanvas> {
                       height: 48,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
+                        border: Border.all(
+                          color: const Color(0xFFCEE6DD),
+                          width: 2,
+                        ),
                         gradient: isSelected
                             ? const LinearGradient(
-                                colors: [Color(0xFFF97316), Color(0xFFFBBF24)],
+                                colors: [Color(0xFF11A984), Color(0xFF63D7AD)],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               )
                             : LinearGradient(
-                                colors: [Colors.white, Colors.grey.shade100],
+                                colors: [Colors.white, const Color(0xFFFFF8DC)],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               ),
                         boxShadow: [
                           BoxShadow(
                             color: isSelected
-                                ? const Color(0xFFF97316).withValues(alpha: 0.4)
+                                ? const Color(0xFF11A984).withValues(alpha: 0.4)
                                 : Colors.black.withValues(alpha: 0.1),
                             blurRadius: isSelected ? 8 : 4,
                             offset: Offset(0, isSelected ? 4 : 2),
@@ -172,7 +211,7 @@ class _GameCanvasState extends State<GameCanvas> {
                               fontWeight: FontWeight.bold,
                               color: isSelected
                                   ? Colors.white
-                                  : const Color(0xFF262626),
+                                  : const Color(0xFF214D5D),
                             ),
                           ),
                           if (isSelected && selectionOrder >= 0)
@@ -182,8 +221,12 @@ class _GameCanvasState extends State<GameCanvas> {
                               child: Container(
                                 width: 16,
                                 height: 16,
-                                decoration: const BoxDecoration(
+                                decoration: BoxDecoration(
                                   shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: const Color(0xFFCEE6DD),
+                                    width: 2,
+                                  ),
                                   color: Colors.white,
                                 ),
                                 alignment: Alignment.center,
@@ -192,7 +235,7 @@ class _GameCanvasState extends State<GameCanvas> {
                                   style: const TextStyle(
                                     fontSize: 9,
                                     fontWeight: FontWeight.bold,
-                                    color: Color(0xFFF97316),
+                                    color: Color(0xFF11A984),
                                   ),
                                 ),
                               ),
@@ -229,7 +272,7 @@ class _ConnectionPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final connectionPaint = Paint()
-      ..color = const Color(0xFFF97316).withValues(alpha: 0.6)
+      ..color = const Color(0xFF11A984).withValues(alpha: 0.6)
       ..strokeWidth = 3
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
@@ -249,14 +292,14 @@ class _ConnectionPainter extends CustomPainter {
     if (isDragging && dragPosition != null && selectedIds.isNotEmpty) {
       final lastNode = nodes.firstWhere((n) => n.id == selectedIds.last);
       final lastPos = Offset(center.dx + lastNode.x, center.dy + lastNode.y);
-      
+
       final dragLinePaint = Paint()
-        ..color = const Color(0xFFF97316).withValues(alpha: 0.4)
+        ..color = const Color(0xFF11A984).withValues(alpha: 0.4)
         ..strokeWidth = 2
         ..style = PaintingStyle.stroke
         ..strokeCap = StrokeCap.round
         ..strokeCap = StrokeCap.round;
-      
+
       canvas.drawLine(lastPos, dragPosition!, dragLinePaint);
     }
   }

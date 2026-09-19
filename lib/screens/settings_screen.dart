@@ -1,3 +1,4 @@
+import '../widgets/adventure_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -49,7 +50,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   Widget build(BuildContext context) {
     final profile = ref.watch(appProvider).profile;
 
-    return Scaffold(
+    return AdventureScaffold(
       extendBody: true,
       appBar: AppBar(
         title: const Text('SETTINGS'),
@@ -58,20 +59,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           onPressed: () => context.go('/home'),
         ),
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFFFFF8E1), Color(0xFFFFF8E1)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+      body: SizedBox(
         child: Column(
           children: [
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.all(20),
                 children: [
+                  const AdventureIntro(
+                    title: 'Make yourself at home',
+                    subtitle: 'Your sound, your profile, your adventure.',
+                    icon: Icons.tune_rounded,
+                  ),
                   // Sound settings
                   _Section(
                     children: [
@@ -111,7 +110,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         onPressed: () => context.go('/tutorial'),
                         child: const Align(
                           alignment: Alignment.centerLeft,
-                          child: Text('Replay Tutorial →'),
+                          child: Text('Replay tutorial'),
                         ),
                       ),
                     ],
@@ -139,7 +138,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                             : 'Set a 4-digit PIN to protect the parent dashboard.',
                         style: TextStyle(
                           fontSize: 12,
-                          color: Colors.grey.shade500,
+                          color: const Color(0xFF647580),
                         ),
                       ),
                       const SizedBox(height: 8),
@@ -208,7 +207,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         onPressed: () => context.go('/parent'),
                         child: const Align(
                           alignment: Alignment.centerLeft,
-                          child: Text('Open Parent Dashboard →'),
+                          child: Text('Open parent dashboard'),
                         ),
                       ),
                     ],
@@ -234,7 +233,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                         'This clears levels, coins, and missed words. Your character and items are kept.',
                         style: TextStyle(
                           fontSize: 12,
-                          color: Colors.grey.shade500,
+                          color: const Color(0xFF647580),
                         ),
                       ),
                       if (_showResetConfirm) ...[
@@ -303,7 +302,7 @@ class _Section extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -331,38 +330,23 @@ class _Toggle extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            label,
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF525252),
+          Flexible(
+            child: Text(
+              label,
+              style: const TextStyle(
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF525252),
+              ),
             ),
           ),
-          GestureDetector(
-            onTap: () {
+          Switch.adaptive(
+            value: value,
+            activeThumbColor: Colors.white,
+            activeTrackColor: const Color(0xFF15A780),
+            onChanged: (_) {
               AudioService.playClick();
               onToggle();
             },
-            child: Container(
-              width: 48,
-              height: 28,
-              decoration: BoxDecoration(
-                color: value ? const Color(0xFFFF8C00) : Colors.grey.shade200,
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Align(
-                alignment: value ? Alignment.centerRight : Alignment.centerLeft,
-                child: Container(
-                  width: 24,
-                  height: 24,
-                  margin: const EdgeInsets.all(2),
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
           ),
         ],
       ),

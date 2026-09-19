@@ -1,3 +1,4 @@
+import '../widgets/adventure_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../services/audio_service.dart';
@@ -18,7 +19,7 @@ class ProgressScreen extends StatelessWidget {
     final words = {
       for (final word in StorageService.allWords) word.id: word.word,
     };
-    return Scaffold(
+    return AdventureScaffold(
       extendBody: true,
       appBar: AppBar(
         title: const Text('YOUR PROGRESS'),
@@ -34,63 +35,97 @@ class ProgressScreen extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
           children: [
-            const CarnivalPennants(),
-            const CarnivalRibbon('Look how far you have come!'),
-            const Icon(
-              Icons.emoji_events_rounded,
-              color: AppTheme.orange,
-              size: 72,
-            ),
-            Text(
-              attempted == 0
-                  ? 'Your adventure starts here'
-                  : 'Every practice counts!',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headlineSmall,
+            AdventureIntro(
+              title: attempted == 0
+                  ? 'Your story starts here'
+                  : 'Look how far you have come!',
+              subtitle:
+                  'Every word is a little win. Keep your adventure growing.',
+              icon: Icons.emoji_events_rounded,
+              color: const Color(0xFF109E84),
             ),
             const SizedBox(height: 18),
-            ...[
-              (
-                label: 'Accuracy',
-                value:
+            LayoutBuilder(
+              builder: (context, constraints) {
+                final stats = [
+                  (
+                    'Accuracy',
                     '${attempted == 0 ? 0 : (correct / attempted * 100).round()}%',
-                icon: Icons.track_changes,
-                color: AppTheme.green,
-              ),
-              (
-                label: 'Levels completed',
-                value: '$completed / ${StorageService.allLevels.length}',
-                icon: Icons.flag,
-                color: AppTheme.blue,
-              ),
-              (
-                label: 'Words practiced',
-                value: '$attempted',
-                icon: Icons.menu_book,
-                color: AppTheme.purple,
-              ),
-              (
-                label: 'Correct words',
-                value: '$correct',
-                icon: Icons.check_circle,
-                color: AppTheme.orange,
-              ),
-            ].map(
-              (stat) => Card(
-                child: ListTile(
-                  leading: Icon(stat.icon, color: stat.color, size: 30),
-                  title: Text(stat.label),
-                  trailing: Text(
-                    stat.value,
-                    style: TextStyle(
-                      fontFamily: 'Baloo2',
-                      fontSize: 24,
-                      color: stat.color,
-                      fontWeight: FontWeight.w800,
-                    ),
+                    Icons.track_changes,
+                    AppTheme.green,
                   ),
-                ),
-              ),
+                  (
+                    'Levels completed',
+                    '$completed / ${StorageService.allLevels.length}',
+                    Icons.flag_rounded,
+                    AppTheme.blue,
+                  ),
+                  (
+                    'Words practiced',
+                    '$attempted',
+                    Icons.menu_book_rounded,
+                    AppTheme.purple,
+                  ),
+                  (
+                    'Correct words',
+                    '$correct',
+                    Icons.check_circle_rounded,
+                    AppTheme.orange,
+                  ),
+                ];
+                return Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: stats
+                      .map(
+                        (stat) => SizedBox(
+                          width: constraints.maxWidth < 260
+                              ? constraints.maxWidth
+                              : (constraints.maxWidth - 12) / 2,
+                          child: Container(
+                            padding: const EdgeInsets.all(18),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(24),
+                              border: Border.all(
+                                color: stat.$4.withValues(alpha: .2),
+                                width: 2,
+                              ),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Icon(stat.$3, color: stat.$4, size: 29),
+                                const SizedBox(height: 10),
+                                FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    stat.$2,
+                                    style: TextStyle(
+                                      fontFamily: 'Baloo2',
+                                      fontWeight: FontWeight.w800,
+                                      fontSize: 30,
+                                      height: 1.1,
+                                      color: stat.$4,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                Text(
+                                  stat.$1,
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w700,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      )
+                      .toList(),
+                );
+              },
             ),
             const CarnivalRibbon('Words to practice'),
             if (missed.isEmpty)

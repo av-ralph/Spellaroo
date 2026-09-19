@@ -90,13 +90,17 @@ class AppNotifier extends StateNotifier<AppState> {
       debugPrint('addCoins: profile is null, aborting');
       return;
     }
-    debugPrint('addCoins: current coins=${state.profile!.coins}, adding=$amount');
+    debugPrint(
+      'addCoins: current coins=${state.profile!.coins}, adding=$amount',
+    );
     final updated = state.profile!.copyWith(
       coins: state.profile!.coins + amount,
     );
     await StorageService.saveProfile(updated);
     state = state.copyWith(profile: updated);
-    debugPrint('addCoins: saved and updated, new coins=${state.profile!.coins}');
+    debugPrint(
+      'addCoins: saved and updated, new coins=${state.profile!.coins}',
+    );
   }
 
   Future<void> spendCoins(int amount) async {

@@ -1,3 +1,4 @@
+import '../widgets/adventure_scaffold.dart';
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -39,14 +40,16 @@ class _GameScreenState extends ConsumerState<GameScreen> {
 
   void _leave() {
     final state = ref.read(gameProvider);
-    final inProgress = state.status == GameStatus.playing ||
-        state.status == GameStatus.wrong;
+    final inProgress =
+        state.status == GameStatus.playing || state.status == GameStatus.wrong;
     if (inProgress) {
       showDialog(
         context: context,
         builder: (ctx) => AlertDialog(
           title: const Text('Leave game?'),
-          content: const Text('Your progress and coins in this session will be lost.'),
+          content: const Text(
+            'Your progress and coins in this session will be lost.',
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(ctx).pop(),
@@ -57,7 +60,9 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                 Navigator.of(ctx).pop();
                 AudioService.stopBgm();
                 context.go(
-                  widget.category == 'random' ? '/home' : '/play/${widget.category}',
+                  widget.category == 'random'
+                      ? '/home'
+                      : '/play/${widget.category}',
                 );
               },
               child: const Text('Leave', style: TextStyle(color: Colors.red)),
@@ -117,7 +122,9 @@ class _GameScreenState extends ConsumerState<GameScreen> {
             final next =
                 StorageService.getLevelProgress(nextId) ??
                 LevelProgress(levelId: nextId);
-            await StorageService.saveLevelProgress(next.copyWith(unlocked: true));
+            await StorageService.saveLevelProgress(
+              next.copyWith(unlocked: true),
+            );
           }
         }
       } catch (e) {
@@ -151,10 +158,12 @@ class _GameScreenState extends ConsumerState<GameScreen> {
       }
     });
     if (state.status == GameStatus.loading) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const AdventureScaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
     }
     if (state.words.isEmpty) {
-      return Scaffold(
+      return AdventureScaffold(
         body: SafeArea(
           child: Center(
             child: Column(
@@ -173,7 +182,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
     return _playing(state);
   }
 
-  Widget _intro(GameState state) => Scaffold(
+  Widget _intro(GameState state) => AdventureScaffold(
     backgroundColor: const Color(0xFFFFF8E1),
     body: SafeArea(
       child: Center(
@@ -235,7 +244,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
     final answer = state.selectedIds.map((id) => letters[id] ?? '').join();
     final active = state.status == GameStatus.playing;
     final retry = state.status == GameStatus.wrong;
-    return Scaffold(
+    return AdventureScaffold(
       backgroundColor: const Color(0xFFFFF8E1),
       appBar: AppBar(
         leading: IconButton(
@@ -274,17 +283,33 @@ class _GameScreenState extends ConsumerState<GameScreen> {
                     style: const TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 12),
-                  Text(
-                    answer.isEmpty ? '${word.word.length} letters' : answer,
-                    key: const ValueKey('spelling-answer'),
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontFamily: 'Baloo2',
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 3,
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: const Color(0xFFCDE4DC),
+                        width: 2,
+                      ),
+                    ),
+                    child: Text(
+                      answer.isEmpty ? '${word.word.length} letters' : answer,
+                      key: const ValueKey('spelling-answer'),
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontFamily: 'Baloo2',
+                        fontWeight: FontWeight.w800,
+                        letterSpacing: 3,
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 8),
                   SizedBox(
                     width: canvasSize,
                     height: canvasSize,
@@ -369,7 +394,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
     );
   }
 
-  Widget _results(GameState state) => Scaffold(
+  Widget _results(GameState state) => AdventureScaffold(
     backgroundColor: const Color(0xFFFFF8E1),
     body: SafeArea(
       child: Center(

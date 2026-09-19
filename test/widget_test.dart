@@ -46,7 +46,8 @@ void main() {
       await tester.pumpAndSettle(const Duration(milliseconds: 1500));
       expect(find.text('START'), findsOneWidget);
       expect(find.text('Create profile'), findsNothing);
-      expect(find.byType(Image), findsOneWidget);
+      expect(find.byKey(const ValueKey('splash-background')), findsOneWidget);
+      expect(find.byType(CharacterPortrait), findsOneWidget);
       await tester.tap(find.text('START'));
       await tester.pumpAndSettle();
       expect(find.text('Create profile'), findsOneWidget);
@@ -136,7 +137,7 @@ void main() {
       await tester.pumpAndSettle();
       await tester.tap(find.text('Whiskers'));
       await tester.pumpAndSettle();
-      expect(find.text('Choose Whiskers'), findsOneWidget);
+      expect(find.text('Play with Whiskers'), findsOneWidget);
       expect(CharacterPortrait.assets['cat'], 'assets/images/Character 2.png');
       await tester.scrollUntilVisible(
         find.text('Foxy'),
@@ -145,7 +146,7 @@ void main() {
       );
       expect(find.text('Foxy'), findsOneWidget);
       expect(tester.takeException(), isNull);
-      await tester.tap(find.text('Choose Whiskers'));
+      await tester.tap(find.text('Play with Whiskers'));
       await tester.pumpAndSettle();
       expect(notifier.state.profile!.characterKey, 'cat');
       expect(find.text('Saved choice'), findsOneWidget);

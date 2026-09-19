@@ -135,7 +135,9 @@ class GameNotifier extends StateNotifier<GameState> {
 
     if (correct) {
       final coins = AppConstants.coinsForAttempt(state.category, newAttempts);
-      debugPrint('checkSpelling: CORRECT! category=${state.category} attempt=$newAttempts coins=$coins totalCoins=${state.totalCoins + coins}');
+      debugPrint(
+        'checkSpelling: CORRECT! category=${state.category} attempt=$newAttempts coins=$coins totalCoins=${state.totalCoins + coins}',
+      );
       state = state.copyWith(
         status: GameStatus.correct,
         correctCount: state.correctCount + 1,

@@ -1,3 +1,4 @@
+import '../widgets/adventure_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import '../services/audio_service.dart';
@@ -16,7 +17,7 @@ class CategoryLevelsScreen extends StatelessWidget {
     final progress = {
       for (final p in StorageService.getLevelProgressList()) p.levelId: p,
     };
-    return Scaffold(
+    return AdventureScaffold(
       appBar: AppBar(
         title: Text('${category.toUpperCase()} LEVELS'),
         leading: IconButton(
@@ -42,8 +43,8 @@ class CategoryLevelsScreen extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               sliver: SliverGrid(
                 gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 110,
-                  mainAxisExtent: 110,
+                  maxCrossAxisExtent: 145,
+                  mainAxisExtent: 130,
                   mainAxisSpacing: 12,
                   crossAxisSpacing: 12,
                 ),
@@ -53,15 +54,15 @@ class CategoryLevelsScreen extends StatelessWidget {
                   final unlocked = index == 0 || (saved?.unlocked ?? false);
                   return Material(
                     color: !unlocked
-                        ? const Color(0xFFE1E6DD)
+                        ? const Color(0xFFE4ECE9)
                         : saved?.completed == true
                         ? AppTheme.paleGold
-                        : const Color(0xFFFFFDF3),
+                        : const Color(0xFFD9F5EA),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(26),
                       side: BorderSide(
                         color: unlocked
-                            ? const Color(0xFFDCB44F)
+                            ? const Color(0xFF3EB58E)
                             : const Color(0xFFB8C3BF),
                         width: 2,
                       ),

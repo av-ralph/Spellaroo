@@ -1,3 +1,4 @@
+import '../widgets/adventure_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -102,23 +103,8 @@ class _CharacterSelectScreenState extends ConsumerState<CharacterSelectScreen>
     final screenWidth = MediaQuery.sizeOf(context).width;
     final isCompact = screenWidth < 400;
 
-    return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              _previewKey != null
-                  ? _cardGradients[
-                      _characters.indexWhere((c) => c.key == _previewKey)]
-                      [0]
-                      .withValues(alpha: 0.15)
-                  : const Color(0xFFFFF8E1),
-              const Color(0xFFFFF8E1),
-            ],
-          ),
-        ),
+    return AdventureScaffold(
+      body: SizedBox(
         child: SafeArea(
           child: Column(
             children: [
@@ -171,18 +157,21 @@ class _CharacterSelectScreenState extends ConsumerState<CharacterSelectScreen>
                             border: Border.all(
                               color: _previewKey != null
                                   ? _cardGradients[_characters.indexWhere(
-                                          (c) => c.key == _previewKey)]
-                                      [1]
+                                      (c) => c.key == _previewKey,
+                                    )][1]
                                   : const Color(0xFFE7CD86),
                               width: 2.5,
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: (_previewKey != null
-                                        ? _cardGradients[_characters.indexWhere(
-                                            (c) => c.key == _previewKey)][1]
-                                        : const Color(0xFFE7CD86))
-                                    .withValues(alpha: 0.2),
+                                color:
+                                    (_previewKey != null
+                                            ? _cardGradients[_characters
+                                                  .indexWhere(
+                                                    (c) => c.key == _previewKey,
+                                                  )][1]
+                                            : const Color(0xFFE7CD86))
+                                        .withValues(alpha: 0.2),
                                 blurRadius: 20,
                                 offset: const Offset(0, 8),
                               ),
@@ -222,10 +211,11 @@ class _CharacterSelectScreenState extends ConsumerState<CharacterSelectScreen>
                                   vertical: 5,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: _cardGradients[_characters.indexWhere(
-                                          (c) => c.key == _previewKey)]
-                                      [0]
-                                      .withValues(alpha: 0.25),
+                                  color:
+                                      _cardGradients[_characters.indexWhere(
+                                            (c) => c.key == _previewKey,
+                                          )][0]
+                                          .withValues(alpha: 0.25),
                                   borderRadius: BorderRadius.circular(12),
                                 ),
                                 child: Text(
@@ -233,9 +223,10 @@ class _CharacterSelectScreenState extends ConsumerState<CharacterSelectScreen>
                                   style: TextStyle(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 13,
-                                    color: _cardGradients[_characters.indexWhere(
-                                            (c) => c.key == _previewKey)]
-                                        [1],
+                                    color:
+                                        _cardGradients[_characters.indexWhere(
+                                          (c) => c.key == _previewKey,
+                                        )][1],
                                   ),
                                 ),
                               ),
@@ -279,7 +270,9 @@ class _CharacterSelectScreenState extends ConsumerState<CharacterSelectScreen>
                                 boxShadow: [
                                   if (isSelected)
                                     BoxShadow(
-                                      color: gradient[1].withValues(alpha: 0.25),
+                                      color: gradient[1].withValues(
+                                        alpha: 0.25,
+                                      ),
                                       blurRadius: 12,
                                       offset: const Offset(0, 4),
                                     ),
@@ -292,7 +285,10 @@ class _CharacterSelectScreenState extends ConsumerState<CharacterSelectScreen>
                                     flex: 3,
                                     child: Padding(
                                       padding: const EdgeInsets.fromLTRB(
-                                        6, 6, 6, 0,
+                                        6,
+                                        6,
+                                        6,
+                                        0,
                                       ),
                                       child: Stack(
                                         alignment: Alignment.center,
@@ -313,7 +309,9 @@ class _CharacterSelectScreenState extends ConsumerState<CharacterSelectScreen>
                                                   boxShadow: [
                                                     BoxShadow(
                                                       color: gradient[1]
-                                                          .withValues(alpha: 0.4),
+                                                          .withValues(
+                                                            alpha: 0.4,
+                                                          ),
                                                       blurRadius: 6,
                                                     ),
                                                   ],
@@ -369,15 +367,15 @@ class _CharacterSelectScreenState extends ConsumerState<CharacterSelectScreen>
                             _confirm();
                           },
                     style: FilledButton.styleFrom(
-                      backgroundColor: const Color(0xFF388E3C),
+                      backgroundColor: const Color(0xFF109E69),
                       foregroundColor: Colors.white,
                       disabledBackgroundColor: const Color(0xFFE4DAC0),
                       disabledForegroundColor: const Color(0xFF776A54),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16),
+                        borderRadius: BorderRadius.circular(22),
                       ),
                       side: const BorderSide(
-                        color: Color(0xFF28682B),
+                        color: Color(0xFF00825A),
                         width: 2,
                       ),
                     ),

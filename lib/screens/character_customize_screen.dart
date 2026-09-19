@@ -1,3 +1,4 @@
+import '../widgets/adventure_scaffold.dart';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -68,7 +69,7 @@ class _CharacterCustomizeScreenState
         .where((entry) => entry.equipped)
         .map((e) => e.itemId)
         .toSet();
-    return Scaffold(
+    return AdventureScaffold(
       appBar: AppBar(
         title: const Text('MY WARDROBE'),
         leading: IconButton(
@@ -93,6 +94,13 @@ class _CharacterCustomizeScreenState
                 padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
                 child: Column(
                   children: [
+                    const AdventureIntro(
+                      title: 'Ready for your next adventure?',
+                      subtitle:
+                          'Pick a favorite outfit. Your buddy wears it back home, too.',
+                      icon: Icons.checkroom_rounded,
+                      color: Color(0xFF8651CC),
+                    ),
                     Container(
                       decoration: BoxDecoration(
                         gradient: const RadialGradient(

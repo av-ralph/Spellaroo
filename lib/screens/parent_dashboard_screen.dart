@@ -1,3 +1,4 @@
+import '../widgets/adventure_scaffold.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -49,7 +50,7 @@ class _ParentDashboardScreenState extends ConsumerState<ParentDashboardScreen> {
     final profile = appState.profile;
 
     if (!_authenticated) {
-      return Scaffold(
+      return AdventureScaffold(
         appBar: AppBar(
           leading: IconButton(
             icon: const Icon(Icons.arrow_back),
@@ -62,14 +63,7 @@ class _ParentDashboardScreenState extends ConsumerState<ParentDashboardScreen> {
           backgroundColor: const Color(0xFF187EB2),
           foregroundColor: Colors.white,
         ),
-        body: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFFFFF8E1), Color(0xFFFFF8E1)],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-          ),
+        body: SizedBox(
           child: Center(
             child: SingleChildScrollView(
               padding: const EdgeInsets.all(32),
@@ -165,7 +159,7 @@ class _ParentDashboardScreenState extends ConsumerState<ParentDashboardScreen> {
         ? totalWordsCorrect / totalWordsAttempted
         : 0.0;
 
-    return Scaffold(
+    return AdventureScaffold(
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -182,23 +176,22 @@ class _ParentDashboardScreenState extends ConsumerState<ParentDashboardScreen> {
         foregroundColor: Colors.white,
         elevation: 0,
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFFFFF8E1), Color(0xFFFFF8E1)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+      body: SizedBox(
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
+            const AdventureIntro(
+              title: 'Growing one word at a time',
+              subtitle: 'A clear view of practice, confidence, and progress.',
+              icon: Icons.family_restroom_rounded,
+              color: Color(0xFF8651CC),
+            ),
             // Profile summary
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(24),
               ),
               child: Column(
                 children: [
@@ -230,7 +223,10 @@ class _ParentDashboardScreenState extends ConsumerState<ParentDashboardScreen> {
                   ),
                   Text(
                     'Grade ${profile?.gradeLevel ?? '-'}',
-                    style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: const Color(0xFF647580),
+                    ),
                   ),
                 ],
               ),
@@ -256,7 +252,7 @@ class _ParentDashboardScreenState extends ConsumerState<ParentDashboardScreen> {
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(24),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -319,7 +315,7 @@ class _ParentDashboardScreenState extends ConsumerState<ParentDashboardScreen> {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(24),
               ),
               child: Column(
                 children: [
@@ -382,7 +378,7 @@ class _StatsCard extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(24),
       ),
       child: Column(
         children: stats

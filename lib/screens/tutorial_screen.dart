@@ -1,3 +1,4 @@
+import '../widgets/adventure_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -29,7 +30,8 @@ class _TutorialScreenState extends ConsumerState<TutorialScreen>
       icon: Icons.link_rounded,
       iconGradient: [Color(0xFFFFA726), Color(0xFFEF6C00)],
       title: 'Connect Letters',
-      description: 'Drag through the letters in the right order to spell the word.',
+      description:
+          'Drag through the letters in the right order to spell the word.',
     ),
     _TutorialPage(
       icon: Icons.refresh_rounded,
@@ -105,19 +107,10 @@ class _TutorialScreenState extends ConsumerState<TutorialScreen>
     final page = _pages[_currentPage];
     final isLast = _currentPage == _pages.length - 1;
 
-    return Scaffold(
+    return AdventureScaffold(
       body: AnimatedContainer(
         duration: const Duration(milliseconds: 400),
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              page.iconGradient[0].withValues(alpha: 0.12),
-              const Color(0xFFFFF8E1),
-            ],
-          ),
-        ),
+
         child: SafeArea(
           child: Column(
             children: [
@@ -168,78 +161,95 @@ class _TutorialScreenState extends ConsumerState<TutorialScreen>
                   itemCount: _pages.length,
                   itemBuilder: (context, index) {
                     final p = _pages[index];
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 32),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          // Icon with gradient background + shadow
-                          ScaleTransition(
-                            scale: _scaleAnim,
-                            child: Container(
-                              width: 140,
-                              height: 140,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: p.iconGradient,
-                                ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: p.iconGradient[1].withValues(alpha: 0.3),
-                                    blurRadius: 24,
-                                    offset: const Offset(0, 8),
+                    return LayoutBuilder(
+                      builder: (context, constraints) => SingleChildScrollView(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 28,
+                          vertical: 20,
+                        ),
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            minHeight: (constraints.maxHeight - 40).clamp(
+                              0,
+                              double.infinity,
+                            ),
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // Icon with gradient background + shadow
+                              ScaleTransition(
+                                scale: _scaleAnim,
+                                child: Container(
+                                  width: 140,
+                                  height: 140,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: p.iconGradient,
+                                    ),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: p.iconGradient[1].withValues(
+                                          alpha: 0.3,
+                                        ),
+                                        blurRadius: 24,
+                                        offset: const Offset(0, 8),
+                                      ),
+                                    ],
                                   ),
-                                ],
+                                  child: Icon(
+                                    p.icon,
+                                    size: 64,
+                                    color: Colors.white,
+                                  ),
+                                ),
                               ),
-                              child: Icon(
-                                p.icon,
-                                size: 64,
-                                color: Colors.white,
+                              const SizedBox(height: 40),
+                              // Title
+                              Text(
+                                p.title,
+                                style: const TextStyle(
+                                  fontFamily: 'Baloo2',
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.w800,
+                                  color: Color(0xFF553522),
+                                ),
+                                textAlign: TextAlign.center,
                               ),
-                            ),
+                              const SizedBox(height: 16),
+                              // Description in a soft card
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                  vertical: 18,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.7),
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(
+                                    color: const Color(
+                                      0xFFE7CD86,
+                                    ).withValues(alpha: 0.5),
+                                    width: 1,
+                                  ),
+                                ),
+                                child: Text(
+                                  p.description,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0xFF6D4C2E),
+                                    height: 1.5,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ],
                           ),
-                          const SizedBox(height: 40),
-                          // Title
-                          Text(
-                            p.title,
-                            style: const TextStyle(
-                              fontFamily: 'Baloo2',
-                              fontSize: 30,
-                              fontWeight: FontWeight.w800,
-                              color: Color(0xFF553522),
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 16),
-                          // Description in a soft card
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 24,
-                              vertical: 18,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.7),
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                color: const Color(0xFFE7CD86).withValues(alpha: 0.5),
-                                width: 1,
-                              ),
-                            ),
-                            child: Text(
-                              p.description,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                                color: Color(0xFF6D4C2E),
-                                height: 1.5,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     );
                   },
@@ -262,9 +272,7 @@ class _TutorialScreenState extends ConsumerState<TutorialScreen>
                           margin: const EdgeInsets.symmetric(horizontal: 3),
                           decoration: BoxDecoration(
                             gradient: i == _currentPage
-                                ? LinearGradient(
-                                    colors: page.iconGradient,
-                                  )
+                                ? LinearGradient(colors: page.iconGradient)
                                 : null,
                             color: i == _currentPage
                                 ? null
@@ -287,22 +295,28 @@ class _TutorialScreenState extends ConsumerState<TutorialScreen>
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: isLast
-                                ? [const Color(0xFF66BB6A), const Color(0xFF2E7D32)]
+                                ? [
+                                    const Color(0xFF66BB6A),
+                                    const Color(0xFF2E7D32),
+                                  ]
                                 : [page.iconGradient[0], page.iconGradient[1]],
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: (isLast
-                                      ? const Color(0xFF2E7D32)
-                                      : page.iconGradient[1])
-                                  .withValues(alpha: 0.35),
+                              color:
+                                  (isLast
+                                          ? const Color(0xFF2E7D32)
+                                          : page.iconGradient[1])
+                                      .withValues(alpha: 0.35),
                               blurRadius: 12,
                               offset: const Offset(0, 4),
                             ),
                           ],
                         ),
                         child: Icon(
-                          isLast ? Icons.check_rounded : Icons.arrow_forward_rounded,
+                          isLast
+                              ? Icons.check_rounded
+                              : Icons.arrow_forward_rounded,
                           color: Colors.white,
                           size: 28,
                         ),

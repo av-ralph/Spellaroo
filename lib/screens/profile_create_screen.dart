@@ -1,3 +1,4 @@
+import '../widgets/adventure_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -39,17 +40,11 @@ class _ProfileCreateScreenState extends ConsumerState<ProfileCreateScreen>
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
-    _fadeAnim = CurvedAnimation(
-      parent: _animController,
-      curve: Curves.easeOut,
-    );
-    _slideAnim = Tween<Offset>(
-      begin: const Offset(0, 0.15),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _animController,
-      curve: Curves.easeOutCubic,
-    ));
+    _fadeAnim = CurvedAnimation(parent: _animController, curve: Curves.easeOut);
+    _slideAnim = Tween<Offset>(begin: const Offset(0, 0.15), end: Offset.zero)
+        .animate(
+          CurvedAnimation(parent: _animController, curve: Curves.easeOutCubic),
+        );
     _animController.forward();
   }
 
@@ -89,15 +84,8 @@ class _ProfileCreateScreenState extends ConsumerState<ProfileCreateScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Color(0xFFE3F2FD), Color(0xFFFFF8E1)],
-          ),
-        ),
+    return AdventureScaffold(
+      body: SizedBox(
         child: SafeArea(
           child: Column(
             children: [
@@ -150,12 +138,16 @@ class _ProfileCreateScreenState extends ConsumerState<ProfileCreateScreen>
                               shape: BoxShape.circle,
                               color: Colors.white,
                               border: Border.all(
-                                color: const Color(0xFF2196F3).withValues(alpha: 0.3),
+                                color: const Color(
+                                  0xFF2196F3,
+                                ).withValues(alpha: 0.3),
                                 width: 3,
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: const Color(0xFF2196F3).withValues(alpha: 0.15),
+                                  color: const Color(
+                                    0xFF2196F3,
+                                  ).withValues(alpha: 0.15),
                                   blurRadius: 24,
                                   offset: const Offset(0, 8),
                                 ),
@@ -183,7 +175,9 @@ class _ProfileCreateScreenState extends ConsumerState<ProfileCreateScreen>
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 15,
-                              color: const Color(0xFF8D6E63).withValues(alpha: 0.8),
+                              color: const Color(
+                                0xFF8D6E63,
+                              ).withValues(alpha: 0.8),
                             ),
                           ),
                           const SizedBox(height: 28),
@@ -215,7 +209,9 @@ class _ProfileCreateScreenState extends ConsumerState<ProfileCreateScreen>
                               decoration: InputDecoration(
                                 hintText: 'Enter your nickname',
                                 hintStyle: TextStyle(
-                                  color: const Color(0xFFBDB09A).withValues(alpha: 0.8),
+                                  color: const Color(
+                                    0xFFBDB09A,
+                                  ).withValues(alpha: 0.8),
                                 ),
                                 prefixIcon: const Icon(
                                   Icons.person_rounded,
@@ -292,7 +288,9 @@ class _ProfileCreateScreenState extends ConsumerState<ProfileCreateScreen>
                                   vertical: 4,
                                 ),
                                 decoration: BoxDecoration(
-                                  color: const Color(0xFFFFD54F).withValues(alpha: 0.3),
+                                  color: const Color(
+                                    0xFFFFD54F,
+                                  ).withValues(alpha: 0.3),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                                 child: Text(
@@ -313,11 +311,11 @@ class _ProfileCreateScreenState extends ConsumerState<ProfileCreateScreen>
                             physics: const NeverScrollableScrollPhysics(),
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 3,
-                              mainAxisSpacing: 10,
-                              crossAxisSpacing: 10,
-                              childAspectRatio: 1.6,
-                            ),
+                                  crossAxisCount: 3,
+                                  mainAxisSpacing: 10,
+                                  crossAxisSpacing: 10,
+                                  childAspectRatio: 1.6,
+                                ),
                             itemCount: _gradeLabels.length,
                             itemBuilder: (context, index) {
                               final g = _gradeLabels[index];
@@ -343,8 +341,9 @@ class _ProfileCreateScreenState extends ConsumerState<ProfileCreateScreen>
                                     boxShadow: [
                                       if (selected)
                                         BoxShadow(
-                                          color: const Color(0xFFF9A825)
-                                              .withValues(alpha: 0.25),
+                                          color: const Color(
+                                            0xFFF9A825,
+                                          ).withValues(alpha: 0.25),
                                           blurRadius: 8,
                                           offset: const Offset(0, 3),
                                         ),
@@ -386,15 +385,19 @@ class _ProfileCreateScreenState extends ConsumerState<ProfileCreateScreen>
                             child: FilledButton(
                               onPressed: _saving ? null : _create,
                               style: FilledButton.styleFrom(
-                                backgroundColor: const Color(0xFF388E3C),
+                                backgroundColor: const Color(0xFF109E69),
                                 foregroundColor: Colors.white,
-                                disabledBackgroundColor: const Color(0xFFE4DAC0),
-                                disabledForegroundColor: const Color(0xFF776A54),
+                                disabledBackgroundColor: const Color(
+                                  0xFFE4DAC0,
+                                ),
+                                disabledForegroundColor: const Color(
+                                  0xFF776A54,
+                                ),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
+                                  borderRadius: BorderRadius.circular(22),
                                 ),
                                 side: const BorderSide(
-                                  color: Color(0xFF28682B),
+                                  color: Color(0xFF00825A),
                                   width: 2,
                                 ),
                               ),
