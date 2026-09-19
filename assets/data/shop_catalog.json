@@ -466,5 +466,140 @@
     "colorName": "blue",
     "isStarter": true,
     "description": "Your free starter wardrobe"
+  },
+  {
+    "id": 1100,
+    "name": "Emerald Crown",
+    "category": "headwear",
+    "colorName": "green",
+    "price": 30,
+    "rarity": "rare",
+    "description": "An adventure reward for every buddy."
+  },
+  {
+    "id": 1101,
+    "name": "Rose Wizard Hat",
+    "category": "headwear",
+    "colorName": "pink",
+    "price": 30,
+    "rarity": "rare",
+    "description": "An adventure reward for every buddy."
+  },
+  {
+    "id": 1102,
+    "name": "Mint Adventure Hoodie",
+    "category": "tops",
+    "colorName": "green",
+    "price": 30,
+    "rarity": "rare",
+    "description": "An adventure reward for every buddy."
+  },
+  {
+    "id": 1103,
+    "name": "Midnight Adventure Hoodie",
+    "category": "tops",
+    "colorName": "blue",
+    "price": 30,
+    "rarity": "rare",
+    "description": "An adventure reward for every buddy."
+  },
+  {
+    "id": 1104,
+    "name": "Sunset Shorts",
+    "category": "bottoms",
+    "colorName": "red",
+    "price": 30,
+    "rarity": "rare",
+    "description": "An adventure reward for every buddy."
+  },
+  {
+    "id": 1105,
+    "name": "Golden Trail Shorts",
+    "category": "bottoms",
+    "colorName": "golden",
+    "price": 30,
+    "rarity": "rare",
+    "description": "An adventure reward for every buddy."
+  },
+  {
+    "id": 1106,
+    "name": "Berry Star Headband",
+    "category": "headbands",
+    "colorName": "purple",
+    "price": 30,
+    "rarity": "rare",
+    "description": "An adventure reward for every buddy."
+  },
+  {
+    "id": 1107,
+    "name": "Forest Bow Headband",
+    "category": "headbands",
+    "colorName": "green",
+    "price": 30,
+    "rarity": "rare",
+    "description": "An adventure reward for every buddy."
+  },
+  {
+    "id": 1108,
+    "name": "Purple Frames",
+    "category": "glasses",
+    "colorName": "purple",
+    "price": 30,
+    "rarity": "rare",
+    "description": "An adventure reward for every buddy."
+  },
+  {
+    "id": 1109,
+    "name": "Ocean Bow Tie",
+    "category": "accessories",
+    "colorName": "blue",
+    "price": 30,
+    "rarity": "rare",
+    "description": "An adventure reward for every buddy."
+  },
+  {
+    "id": 1110,
+    "name": "Pink Spiky Hair",
+    "category": "hair",
+    "colorName": "pink",
+    "price": 30,
+    "rarity": "rare",
+    "description": "An adventure reward for every buddy."
+  },
+  {
+    "id": 1111,
+    "name": "Purple Trail Boots",
+    "category": "shoes",
+    "colorName": "purple",
+    "price": 30,
+    "rarity": "rare",
+    "description": "An adventure reward for every buddy."
+  },
+  {
+    "id": 1112,
+    "name": "Forest Explorer Bag",
+    "category": "bags",
+    "colorName": "green",
+    "price": 30,
+    "rarity": "rare",
+    "description": "An adventure reward for every buddy."
+  },
+  {
+    "id": 1113,
+    "name": "Berry Sparkles",
+    "category": "effects",
+    "colorName": "purple",
+    "price": 30,
+    "rarity": "rare",
+    "description": "An adventure reward for every buddy."
+  },
+  {
+    "id": 1114,
+    "name": "Silver Halo",
+    "category": "special",
+    "colorName": "silver",
+    "price": 30,
+    "rarity": "rare",
+    "description": "An adventure reward for every buddy."
   }
 ]

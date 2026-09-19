@@ -1,3 +1,4 @@
+import '../config/wardrobe_categories.dart';
 import '../widgets/adventure_scaffold.dart';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
@@ -23,14 +24,7 @@ class _CharacterCustomizeScreenState
     extends ConsumerState<CharacterCustomizeScreen> {
   String _category = 'tops';
   bool _saving = false;
-  static const _categories = {
-    'tops': 'Tops',
-    'bottoms': 'Bottoms',
-    'headbands': 'Headbands',
-    'accessories': 'Accessories',
-    'headwear': 'Hats',
-    'glasses': 'Glasses',
-  };
+  static const _categories = wardrobeCategories;
   Future<void> _wear(int? id) async {
     if (_saving) return;
     setState(() => _saving = true);

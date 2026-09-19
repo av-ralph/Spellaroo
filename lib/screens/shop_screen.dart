@@ -1,3 +1,4 @@
+import '../config/wardrobe_categories.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -5,6 +6,7 @@ import '../providers/app_provider.dart';
 import '../providers/shop_provider.dart';
 import '../services/audio_service.dart';
 import '../services/storage_service.dart';
+import '../widgets/character_portrait.dart';
 import '../widgets/character_painter.dart';
 import '../widgets/coin_badge.dart';
 import '../widgets/adventure_scaffold.dart';
@@ -18,19 +20,7 @@ class ShopScreen extends ConsumerStatefulWidget {
 class _ShopScreenState extends ConsumerState<ShopScreen> {
   String _selectedCategory = 'headwear';
   int? _busyItem;
-  static const _categories = {
-    'headwear': 'Hats',
-    'tops': 'Tops',
-    'bottoms': 'Bottoms',
-    'headbands': 'Headbands',
-    'glasses': 'Glasses',
-    'accessories': 'Accessories',
-    'hair': 'Hair',
-    'shoes': 'Shoes',
-    'bags': 'Bags',
-    'effects': 'Effects',
-    'special': 'Special',
-  };
+  static const _categories = wardrobeCategories;
   IconData _icon(String category) => switch (category) {
     'headwear' => Icons.school_rounded,
     'tops' => Icons.checkroom_rounded,
@@ -60,7 +50,9 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
         final bought = await shop.buyItem(id);
         if (mounted && bought) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('$name is yours! Tap Wear to try it on.')),
+            SnackBar(
+              content: Text('$name is yours! Your buddy is wearing it now.'),
+            ),
           );
         }
       }
@@ -99,15 +91,76 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
       ),
       body: CustomScrollView(
         slivers: [
-          const SliverPadding(
-            padding: EdgeInsets.symmetric(horizontal: 20),
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
             sliver: SliverToBoxAdapter(
-              child: AdventureIntro(
-                title: 'A little reward, a lot of you.',
-                subtitle:
-                    'Earn coins by spelling. Find a new favorite for your buddy.',
-                icon: Icons.shopping_bag_rounded,
-                color: Color(0xFFBE7709),
+              child: Column(
+                children: [
+                  const AdventureIntro(
+                    title: 'A little reward, a lot of you.',
+                    subtitle:
+                        'Earn coins by spelling. Find a new favorite for your buddy.',
+                    icon: Icons.shopping_bag_rounded,
+                    color: Color(0xFFBE7709),
+                  ),
+                  Container(
+                    height: 180,
+                    margin: const EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      gradient: const RadialGradient(
+                        colors: [Colors.white, Color(0xFFFFF0C0)],
+                        radius: 1.0,
+                      ),
+                      borderRadius: BorderRadius.circular(24),
+                      border: Border.all(
+                        color: const Color(0xFFFFD141),
+                        width: 2,
+                      ),
+                    ),
+                    child: Stack(
+                      children: [
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(12),
+                            child: CharacterPortrait(
+                              key: const ValueKey('shop-preview'),
+                              characterKey:
+                                  state.profile?.characterKey ?? 'kangaroo',
+                              equippedByCategory: state.equippedByCategory,
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          right: 12,
+                          bottom: 12,
+                          child: TextButton.icon(
+                            onPressed: () => context.go('/character/customize'),
+                            style: TextButton.styleFrom(
+                              backgroundColor: Colors.white.withValues(
+                                alpha: 0.8,
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            icon: const Icon(Icons.checkroom, size: 18),
+                            label: const Text(
+                              'My Wardrobe',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -203,10 +256,16 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                                 ],
                               ),
                             ),
-                            child: Icon(
-                              _icon(item.category),
-                              size: 49,
-                              color: color,
+                            child: CharacterPortrait(
+                              characterKey:
+                                  state.profile?.characterKey ?? 'kangaroo',
+                              equippedByCategory: {
+                                ...state.equippedByCategory,
+                                item.category: Equipment(
+                                  name: item.name,
+                                  colorName: item.colorName,
+                                ),
+                              },
                             ),
                           ),
                         ),

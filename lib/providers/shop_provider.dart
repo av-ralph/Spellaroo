@@ -25,6 +25,7 @@ class ShopNotifier extends StateNotifier<void> {
       if (existing.isNotEmpty) return false;
 
       await StorageService.purchaseItem(itemId);
+      await StorageService.equipItem(itemId, item.category);
       await ref.read(appProvider.notifier).spendCoins(item.price);
       await ref.read(appProvider.notifier).refreshProfile();
       return true;

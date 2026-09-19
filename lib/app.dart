@@ -16,9 +16,13 @@ import 'screens/settings_screen.dart';
 import 'screens/parent_dashboard_screen.dart';
 import 'screens/tutorial_screen.dart';
 import 'widgets/bottom_nav.dart';
+import 'navigation/mobile_back_dispatcher.dart';
 
 final goRouterProvider = Provider<GoRouter>((ref) {
-  return GoRouter(
+  final rootKey = GlobalKey<NavigatorState>();
+  final shellKey = GlobalKey<NavigatorState>();
+  final router = GoRouter(
+    navigatorKey: rootKey,
     initialLocation: '/',
     routes: [
       GoRoute(path: '/', builder: (c, s) => const SplashScreen()),
@@ -32,27 +36,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(path: '/tutorial', builder: (c, s) => const TutorialScreen()),
       ShellRoute(
-        builder: (context, state, child) => PopScope(
-          canPop: false,
-          onPopInvokedWithResult: (didPop, result) {
-            if (didPop) return;
-            if (state.uri.path != '/home') {
-              context.go('/home');
-            } else {
-              // Let the HomeScreen handle it or re-dispatch if needed.
-              // Actually, since canPop is false, we can try to pop manually
-              // but HomeScreen's PopScope will catch it if we are at /home.
-              // However, PopScope at this level will block it.
-              // Best to only intercept if not at home.
-            }
-          },
-          child: Scaffold(
-            extendBody: state.uri.path == '/home',
-            body: child,
-            bottomNavigationBar: const Padding(
-              padding: EdgeInsets.fromLTRB(7, 0, 7, 12),
-              child: BottomNav(),
-            ),
+        navigatorKey: shellKey,
+        builder: (context, state, child) => Scaffold(
+          extendBody: state.uri.path == '/home',
+          body: child,
+          bottomNavigationBar: const Padding(
+            padding: EdgeInsets.fromLTRB(7, 0, 7, 12),
+            child: BottomNav(),
           ),
         ),
         routes: [
@@ -105,6 +95,13 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
     ],
   );
+  routerBackDispatchers[router] = MobileBackDispatcher(
+    router,
+    rootKey,
+    shellKey,
+  );
+  ref.onDispose(router.dispose);
+  return router;
 });
 
 class SpellarooApp extends ConsumerWidget {
@@ -117,7 +114,10 @@ class SpellarooApp extends ConsumerWidget {
       title: 'Spellaroo',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
-      routerConfig: router,
+      routerDelegate: router.routerDelegate,
+      routeInformationParser: router.routeInformationParser,
+      routeInformationProvider: router.routeInformationProvider,
+      backButtonDispatcher: routerBackDispatchers[router],
     );
   }
 }

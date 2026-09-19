@@ -790,7 +790,99 @@ class OutfitAccessoriesPainter extends CustomPainter {
         shape(c, star(Offset(p.dx, p.dy + 24), 22), const Color(0xFFFFD54F));
       }
     }
-    final hat = equipment['headwear'] ?? equipment['special'];
+    if (equipment['hair'] case final hair?) {
+      final p = fit.forehead;
+      final w = fit.headWidth * .3;
+      final tuft = Path()..moveTo(p.dx - w, p.dy);
+      for (var i = 0; i < 5; i++) {
+        tuft.lineTo(p.dx - w + i * w * .5, p.dy - 55 - (i.isEven ? 35 : 0));
+        tuft.lineTo(p.dx - w + (i + .5) * w * .5, p.dy - 15);
+      }
+      tuft.lineTo(p.dx + w, p.dy);
+      shape(c, tuft..close(), color(hair));
+    }
+    if (equipment['bags'] case final bag?) {
+      final p = Offset(fit.neck.dx - fit.headWidth * .45, fit.neck.dy + 185);
+      shape(
+        c,
+        Path()..addRRect(
+          RRect.fromRectAndRadius(
+            Rect.fromCenter(center: p, width: 120, height: 145),
+            const Radius.circular(24),
+          ),
+        ),
+        color(bag),
+      );
+      shape(c, star(p, 25), Colors.amber);
+    }
+    if (equipment['shoes'] case final shoes?) {
+      final roo = characterKey == 'kangaroo';
+      for (final p
+          in roo
+              ? [const Offset(470, 1375), const Offset(755, 1315)]
+              : [const Offset(697, 945), const Offset(878, 944)]) {
+        shape(
+          c,
+          Path()..addRRect(
+            RRect.fromRectAndRadius(
+              Rect.fromCenter(
+                center: p,
+                width: roo ? 175 : 130,
+                height: roo ? 95 : 65,
+              ),
+              const Radius.circular(25),
+            ),
+          ),
+          color(shoes),
+        );
+        c.drawLine(
+          p - const Offset(30, 0),
+          p + const Offset(30, 0),
+          Paint()
+            ..color = Colors.white
+            ..strokeWidth = 8,
+        );
+      }
+    }
+    final special = equipment['special'];
+    if (special != null && special.name.toLowerCase().contains('cloak')) {
+      final p = fit.neck;
+      shape(
+        c,
+        Path()
+          ..moveTo(p.dx - 80, p.dy)
+          ..lineTo(p.dx - 190, p.dy + 330)
+          ..lineTo(p.dx - 85, p.dy + 300)
+          ..lineTo(p.dx - 35, p.dy + 70)
+          ..close(),
+        color(special),
+      );
+      shape(
+        c,
+        Path()
+          ..moveTo(p.dx + 80, p.dy)
+          ..lineTo(p.dx + 190, p.dy + 330)
+          ..lineTo(p.dx + 85, p.dy + 300)
+          ..lineTo(p.dx + 35, p.dy + 70)
+          ..close(),
+        color(special),
+      );
+    } else if (special != null &&
+        !special.name.toLowerCase().contains('crown')) {
+      final p = fit.forehead - const Offset(0, 100);
+      c.drawOval(
+        Rect.fromCenter(center: p, width: fit.headWidth * .9, height: 55),
+        Paint()
+          ..color = color(special)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 18,
+      );
+    }
+    final hat =
+        equipment['headwear'] ??
+        (special?.name.toLowerCase().contains('crown') == true
+            ? special
+            : null);
     if (hat != null) {
       final p = fit.forehead;
       final w = fit.headWidth * .37;

@@ -71,7 +71,6 @@ void main() {
       final container = ProviderContainer();
       addTearDown(container.dispose);
       final router = container.read(goRouterProvider);
-      addTearDown(router.dispose);
       router.go('/shop');
       final capture = GlobalKey();
       await tester.pumpWidget(
