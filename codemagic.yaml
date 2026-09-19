@@ -21,12 +21,21 @@ workflows:
           flutter build apk --release --android-skip-build-dependency-validation
       - name: Build iOS IPA
         script: |
-          # Note: This requires code signing setup in Codemagic UI
+          # Build iOS. If signing is configured in Codemagic UI, this will produce an IPA.
+          # If not, it will build the framework/app bundle.
           flutter build ios --release --no-codesign
+          
+          # Manually create a zip of the .app if no IPA is produced (useful for debugging)
+          cd build/ios/iphoneos
+          mkdir -id Payload
+          cp -r Runner.app Payload/
+          zip -r Spellaroo.ipa Payload
+          mv Spellaroo.ipa ../../Spellaroo-unsigned.ipa
     artifacts:
-      - build/app/outputs/flutter-apk/*.apk
+      - build/app/outputs/flutter-apk/Spellaroo.apk
+      - build/*.ipa
       - build/ios/ipa/*.ipa
     publishing:
       email:
         recipients:
-          - your-email@example.com # Change this to your email
+          - ralp.com # Change this to your email
