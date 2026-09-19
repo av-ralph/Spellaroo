@@ -26,11 +26,15 @@ workflows:
           flutter build ios --release --no-codesign
           
           # Manually create a zip of the .app if no IPA is produced (useful for debugging)
-          cd build/ios/iphoneos
-          mkdir -id Payload
-          cp -r Runner.app Payload/
-          zip -r Spellaroo.ipa Payload
-          mv Spellaroo.ipa ../../Spellaroo-unsigned.ipa
+          BUILD_DIR="build/ios/iphoneos"
+          if [ -d "$BUILD_DIR/Runner.app" ]; then
+            cd "$BUILD_DIR"
+            mkdir -p Payload
+            cp -r Runner.app Payload/
+            zip -r Spellaroo.ipa Payload
+            mv Spellaroo.ipa ../../Spellaroo-unsigned.ipa
+            cd ../../..
+          fi
     artifacts:
       - build/app/outputs/flutter-apk/Spellaroo.apk
       - build/*.ipa

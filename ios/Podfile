@@ -1,9 +1,8 @@
+# The path to the 'Generated.xcconfig' and 'generated_helper.rb'
+require File.expand_path(File.join('..', 'Flutter', 'generated_helper.rb'), __FILE__)
+
 # Uncomment this line to define a global platform for your project
 platform :ios, '13.0'
-
-# CocoaPods analytics sends network stats synchronous to update and install.
-# If you encounter network problems, un-comment the next line to disable it.
-# disable_pods_analytics!
 
 # Flutter Google Fonts requires this
 install! 'cocoapods', :deterministic_uuids => false
