@@ -141,6 +141,9 @@ class _TutorialScreenState extends ConsumerState<TutorialScreen>
                     ),
                     TextButton(
                       onPressed: _skip,
+                      style: TextButton.styleFrom(
+                        minimumSize: const Size(0, 48),
+                      ),
                       child: Text(
                         'Skip',
                         style: TextStyle(

@@ -240,7 +240,7 @@ class _CharacterSelectScreenState extends ConsumerState<CharacterSelectScreen>
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: isCompact ? 3 : 3,
+                          crossAxisCount: screenWidth > 700 ? 4 : isCompact ? 2 : 3,
                           mainAxisSpacing: 12,
                           crossAxisSpacing: 12,
                           childAspectRatio: 0.82,

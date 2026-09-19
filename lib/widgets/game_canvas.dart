@@ -46,11 +46,12 @@ class _GameCanvasState extends State<GameCanvas> {
     Offset position,
     List<LetterNode> positionedNodes,
     Offset center,
+    double nodeSize,
   ) {
     for (final node in positionedNodes) {
       final pos = Offset(center.dx + node.x, center.dy + node.y);
       final distance = (position - pos).distance;
-      if (distance < 30) {
+      if (distance < nodeSize * 0.625) {
         return node.id;
       }
     }
@@ -61,9 +62,10 @@ class _GameCanvasState extends State<GameCanvas> {
     DragStartDetails details,
     List<LetterNode> positionedNodes,
     Offset center,
+    double nodeSize,
   ) {
     if (!widget.enabled) return;
-    final hitId = _hitTest(details.localPosition, positionedNodes, center);
+    final hitId = _hitTest(details.localPosition, positionedNodes, center, nodeSize);
     if (hitId != null) {
       setState(() {
         _isDragging = true;
@@ -79,12 +81,13 @@ class _GameCanvasState extends State<GameCanvas> {
     DragUpdateDetails details,
     List<LetterNode> positionedNodes,
     Offset center,
+    double nodeSize,
   ) {
     if (!widget.enabled || !_isDragging) return;
     setState(() {
       _dragPosition = details.localPosition;
     });
-    final hitId = _hitTest(details.localPosition, positionedNodes, center);
+    final hitId = _hitTest(details.localPosition, positionedNodes, center, nodeSize);
     if (hitId != null && !widget.selectedIds.contains(hitId)) {
       widget.onLetterTap(hitId);
     }
@@ -102,6 +105,7 @@ class _GameCanvasState extends State<GameCanvas> {
     return LayoutBuilder(
       builder: (context, constraints) {
         final size = min(constraints.maxWidth, constraints.maxHeight);
+        final nodeSize = size * 0.13;
         final scaledRadius = size * 0.35;
         final positionedNodes = nodes
             .map(
@@ -118,9 +122,9 @@ class _GameCanvasState extends State<GameCanvas> {
 
         return GestureDetector(
           onPanStart: (details) =>
-              _onPanStart(details, positionedNodes, center),
+              _onPanStart(details, positionedNodes, center, nodeSize),
           onPanUpdate: (details) =>
-              _onPanUpdate(details, positionedNodes, center),
+              _onPanUpdate(details, positionedNodes, center, nodeSize),
           onPanEnd: _onPanEnd,
           child: SizedBox(
             width: size,
@@ -167,13 +171,13 @@ class _GameCanvasState extends State<GameCanvas> {
                   final selectionOrder = widget.selectedIds.indexOf(node.id);
 
                   return Positioned(
-                    left: pos.dx - 24,
-                    top: pos.dy - 24,
+                    left: pos.dx - nodeSize / 2,
+                    top: pos.dy - nodeSize / 2,
                     child: AnimatedContainer(
                       key: ValueKey('letter-${node.id}'),
                       duration: const Duration(milliseconds: 200),
-                      width: 48,
-                      height: 48,
+                      width: nodeSize,
+                      height: nodeSize,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         border: Border.all(
@@ -207,7 +211,7 @@ class _GameCanvasState extends State<GameCanvas> {
                           Text(
                             node.letter,
                             style: TextStyle(
-                              fontSize: 22,
+                              fontSize: nodeSize * 0.46,
                               fontWeight: FontWeight.bold,
                               color: isSelected
                                   ? Colors.white
@@ -216,11 +220,11 @@ class _GameCanvasState extends State<GameCanvas> {
                           ),
                           if (isSelected && selectionOrder >= 0)
                             Positioned(
-                              top: 2,
-                              right: 2,
+                              top: nodeSize * 0.04,
+                              right: nodeSize * 0.04,
                               child: Container(
-                                width: 16,
-                                height: 16,
+                                width: nodeSize * 0.33,
+                                height: nodeSize * 0.33,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   border: Border.all(
@@ -232,8 +236,8 @@ class _GameCanvasState extends State<GameCanvas> {
                                 alignment: Alignment.center,
                                 child: Text(
                                   '${selectionOrder + 1}',
-                                  style: const TextStyle(
-                                    fontSize: 9,
+                                  style: TextStyle(
+                                    fontSize: nodeSize * 0.19,
                                     fontWeight: FontWeight.bold,
                                     color: Color(0xFF11A984),
                                   ),

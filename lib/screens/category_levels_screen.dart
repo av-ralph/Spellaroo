@@ -42,8 +42,8 @@ class CategoryLevelsScreen extends StatelessWidget {
             SliverPadding(
               padding: const EdgeInsets.all(20),
               sliver: SliverGrid(
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 145,
+                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: MediaQuery.sizeOf(context).width > 600 ? 180 : 145,
                   mainAxisExtent: 130,
                   mainAxisSpacing: 12,
                   crossAxisSpacing: 12,

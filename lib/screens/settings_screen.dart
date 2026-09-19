@@ -59,12 +59,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           onPressed: () => context.go('/home'),
         ),
       ),
-      body: SizedBox(
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                padding: const EdgeInsets.all(20),
+      body: SafeArea(
+        top: false,
+        child: SizedBox(
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.all(20),
                 children: [
                   const AdventureIntro(
                     title: 'Make yourself at home',
@@ -179,6 +181,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                           ElevatedButton(
                             onPressed: _savePin,
                             style: ElevatedButton.styleFrom(
+                              minimumSize: const Size(0, 48),
                               backgroundColor: const Color(0xFFFF8C00),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
@@ -286,6 +289,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               ),
             ),
           ],
+        ),
         ),
       ),
     );

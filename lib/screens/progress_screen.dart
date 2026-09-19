@@ -81,7 +81,9 @@ class ProgressScreen extends StatelessWidget {
                         (stat) => SizedBox(
                           width: constraints.maxWidth < 260
                               ? constraints.maxWidth
-                              : (constraints.maxWidth - 12) / 2,
+                              : constraints.maxWidth > 600
+                                  ? (constraints.maxWidth - 36) / 4
+                                  : (constraints.maxWidth - 12) / 2,
                           child: Container(
                             padding: const EdgeInsets.all(18),
                             decoration: BoxDecoration(

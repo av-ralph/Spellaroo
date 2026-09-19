@@ -89,10 +89,12 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
           ),
         ],
       ),
-      body: CustomScrollView(
-        slivers: [
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
+      body: SafeArea(
+        top: false,
+        child: CustomScrollView(
+          slivers: [
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 8),
             sliver: SliverToBoxAdapter(
               child: Column(
                 children: [
@@ -104,7 +106,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                     color: Color(0xFFBE7709),
                   ),
                   Container(
-                    height: 180,
+                    height: MediaQuery.sizeOf(context).height * 0.22,
                     margin: const EdgeInsets.only(bottom: 16),
                     decoration: BoxDecoration(
                       gradient: const RadialGradient(
@@ -205,7 +207,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: (constraints.crossAxisExtent / 170)
                       .floor()
-                      .clamp(1, 4),
+                      .clamp(1, 5),
                   mainAxisExtent:
                       254 *
                       MediaQuery.textScalerOf(context).scale(1).clamp(1.0, 1.5),
@@ -296,7 +298,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
                           width: double.infinity,
                           child: FilledButton(
                             style: FilledButton.styleFrom(
-                              minimumSize: const Size(0, 40),
+                              minimumSize: const Size(0, 48),
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 7,
                               ),
@@ -336,6 +338,7 @@ class _ShopScreenState extends ConsumerState<ShopScreen> {
             ),
           ),
         ],
+        ),
       ),
     );
   }

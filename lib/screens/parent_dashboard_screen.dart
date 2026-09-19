@@ -77,10 +77,12 @@ class _ParentDashboardScreenState extends ConsumerState<ParentDashboardScreen> {
         backgroundColor: const Color(0xFF187EB2),
         foregroundColor: Colors.white,
       ),
-      body: SizedBox(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(32),
+      body: SafeArea(
+        top: false,
+        child: SizedBox(
+          child: Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(32),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -154,6 +156,7 @@ class _ParentDashboardScreenState extends ConsumerState<ParentDashboardScreen> {
             ),
           ),
         ),
+        ),
       ),
     );
   }
@@ -191,9 +194,11 @@ class _ParentDashboardScreenState extends ConsumerState<ParentDashboardScreen> {
         foregroundColor: Colors.white,
         elevation: 0,
       ),
-      body: SizedBox(
-        child: ListView(
-          padding: const EdgeInsets.all(20),
+      body: SafeArea(
+        top: false,
+        child: SizedBox(
+          child: ListView(
+            padding: const EdgeInsets.all(20),
           children: [
             const AdventureIntro(
               title: 'Growing one word at a time',
@@ -289,14 +294,17 @@ class _ParentDashboardScreenState extends ConsumerState<ParentDashboardScreen> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text(
-                                  StorageService.allWords
-                                          .where((word) => word.id == w.wordId)
-                                          .firstOrNull
-                                          ?.word ??
-                                      'Word ${w.wordId}',
-                                  style: const TextStyle(fontSize: 14),
+                                Flexible(
+                                  child: Text(
+                                    StorageService.allWords
+                                            .where((word) => word.id == w.wordId)
+                                            .firstOrNull
+                                            ?.word ??
+                                        'Word ${w.wordId}',
+                                    style: const TextStyle(fontSize: 14),
+                                  ),
                                 ),
+                                const SizedBox(width: 8),
                                 Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 8,
@@ -349,6 +357,7 @@ class _ParentDashboardScreenState extends ConsumerState<ParentDashboardScreen> {
               ),
             ),
           ],
+        ),
         ),
       ),
     );
@@ -403,7 +412,10 @@ class _StatsCard extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(s.label, style: const TextStyle(fontSize: 14)),
+                    Flexible(
+                      child: Text(s.label, style: const TextStyle(fontSize: 14)),
+                    ),
+                    const SizedBox(width: 8),
                     Text(
                       s.value,
                       style: const TextStyle(

@@ -280,7 +280,7 @@ class _GameScreenState extends ConsumerState<GameScreen> {
           builder: (context, constraints) {
             final canvasSize = min(
               max(constraints.maxWidth - 32, 240.0),
-              360.0,
+              min(constraints.maxWidth - 32, 500.0),
             );
             return SingleChildScrollView(
               padding: const EdgeInsets.all(16),

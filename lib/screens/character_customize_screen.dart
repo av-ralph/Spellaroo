@@ -286,6 +286,7 @@ class _CharacterCustomizeScreenState
                               const SizedBox(height: 4),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
                                 children: [
                                   if (active)
                                     const Icon(
@@ -294,17 +295,19 @@ class _CharacterCustomizeScreenState
                                       color: AppTheme.green,
                                     ),
                                   if (active) const SizedBox(width: 4),
-                                  Text(
-                                    active
-                                        ? 'Wearing'
-                                        : item?.isStarter == true
-                                        ? 'Free starter'
-                                        : 'Tap to wear',
-                                    style: TextStyle(
-                                      fontSize: 10,
-                                      color: active
-                                          ? const Color(0xFF26732C)
-                                          : AppTheme.brown,
+                                  Flexible(
+                                    child: Text(
+                                      active
+                                          ? 'Wearing'
+                                          : item?.isStarter == true
+                                          ? 'Free starter'
+                                          : 'Tap to wear',
+                                      style: TextStyle(
+                                        fontSize: 10,
+                                        color: active
+                                            ? const Color(0xFF26732C)
+                                            : AppTheme.brown,
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -316,8 +319,8 @@ class _CharacterCustomizeScreenState
                     ),
                   );
                 }, childCount: items.length + 1),
-                gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                  maxCrossAxisExtent: 165,
+                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                  maxCrossAxisExtent: MediaQuery.sizeOf(context).width > 600 ? 200 : 165,
                   mainAxisExtent: 174,
                   mainAxisSpacing: 10,
                   crossAxisSpacing: 10,
