@@ -32,12 +32,27 @@ final goRouterProvider = Provider<GoRouter>((ref) {
       ),
       GoRoute(path: '/tutorial', builder: (c, s) => const TutorialScreen()),
       ShellRoute(
-        builder: (context, state, child) => Scaffold(
-          extendBody: state.uri.path == '/home',
-          body: child,
-          bottomNavigationBar: const Padding(
-            padding: EdgeInsets.fromLTRB(7, 0, 7, 12),
-            child: BottomNav(),
+        builder: (context, state, child) => PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, result) {
+            if (didPop) return;
+            if (state.uri.path != '/home') {
+              context.go('/home');
+            } else {
+              // Let the HomeScreen handle it or re-dispatch if needed.
+              // Actually, since canPop is false, we can try to pop manually
+              // but HomeScreen's PopScope will catch it if we are at /home.
+              // However, PopScope at this level will block it.
+              // Best to only intercept if not at home.
+            }
+          },
+          child: Scaffold(
+            extendBody: state.uri.path == '/home',
+            body: child,
+            bottomNavigationBar: const Padding(
+              padding: EdgeInsets.fromLTRB(7, 0, 7, 12),
+              child: BottomNav(),
+            ),
           ),
         ),
         routes: [

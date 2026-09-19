@@ -157,11 +157,24 @@ class _GameScreenState extends ConsumerState<GameScreen> {
         _saving = _save(next);
       }
     });
+
     if (state.status == GameStatus.loading) {
       return const AdventureScaffold(
         body: Center(child: CircularProgressIndicator()),
       );
     }
+
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        _leave();
+      },
+      child: _buildContent(state),
+    );
+  }
+
+  Widget _buildContent(GameState state) {
     if (state.words.isEmpty) {
       return AdventureScaffold(
         body: SafeArea(

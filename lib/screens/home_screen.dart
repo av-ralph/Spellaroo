@@ -24,6 +24,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     AudioService.playBgm('assets/sounds/bgm/main_menu.mp3');
   }
 
+  void _confirmExit() {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Quit Spellaroo?'),
+        content: const Text('Are you sure you want to exit the game?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('Stay'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(ctx).pop();
+              SystemNavigator.pop();
+            },
+            child: const Text('Exit', style: TextStyle(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(appProvider);
@@ -32,12 +55,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     if (profile == null) {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light.copyWith(
-        statusBarColor: Colors.transparent,
-      ),
-      child: Scaffold(
-        backgroundColor: const Color(0xFF073E3D),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        _confirmExit();
+      },
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light.copyWith(
+          statusBarColor: Colors.transparent,
+        ),
+        child: Scaffold(
+          backgroundColor: const Color(0xFF073E3D),
         body: LayoutBuilder(
           builder: (context, viewport) {
             final width = math.min(viewport.maxWidth, 600.0);
@@ -221,82 +250,90 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
           },
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }
 
 class CategorySelectScreen extends StatelessWidget {
   const CategorySelectScreen({super.key});
   @override
-  Widget build(BuildContext context) => AdventureScaffold(
-    appBar: AppBar(
-      title: const Text('CHOOSE A CATEGORY'),
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () => context.go('/home'),
+  Widget build(BuildContext context) => PopScope(
+    canPop: false,
+    onPopInvokedWithResult: (didPop, result) {
+      if (didPop) return;
+      context.go('/home');
+    },
+    child: AdventureScaffold(
+      appBar: AppBar(
+        title: const Text('CHOOSE A CATEGORY'),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => context.go('/home'),
+        ),
       ),
-    ),
-    body: SafeArea(
-      child: ListView(
-        padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-        children: [
-          const CarnivalPennants(),
-          const CarnivalRibbon('Pick your challenge'),
-          const SizedBox(height: 16),
-          ...[
-            (
-              key: 'easy',
-              label: 'Easy',
-              subtitle: 'Build your confidence',
-              color: AppTheme.green,
-              icon: Icons.eco,
-            ),
-            (
-              key: 'medium',
-              label: 'Medium',
-              subtitle: 'Grow your word power',
-              color: AppTheme.orange,
-              icon: Icons.bolt,
-            ),
-            (
-              key: 'hard',
-              label: 'Hard',
-              subtitle: 'Take on a challenge',
-              color: AppTheme.red,
-              icon: Icons.local_fire_department,
-            ),
-            (
-              key: 'random',
-              label: 'Random',
-              subtitle: 'A surprise mix of words',
-              color: AppTheme.purple,
-              icon: Icons.shuffle,
-            ),
-          ].map(
-            (c) => Padding(
-              padding: const EdgeInsets.only(bottom: 24),
-              child: Column(
-                children: [
-                  CarnivalButton(
-                    label: c.label,
-                    color: c.color,
-                    icon: c.icon,
-                    onPressed: () => context.go('/play/${c.key}'),
-                  ),
-                  const SizedBox(height: 7),
-                  Text(
-                    c.subtitle,
-                    style: const TextStyle(color: AppTheme.brown),
-                  ),
-                ],
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+          children: [
+            const CarnivalPennants(),
+            const CarnivalRibbon('Pick your challenge'),
+            const SizedBox(height: 16),
+            ...[
+              (
+                key: 'easy',
+                label: 'Easy',
+                subtitle: 'Build your confidence',
+                color: AppTheme.green,
+                icon: Icons.eco,
+              ),
+              (
+                key: 'medium',
+                label: 'Medium',
+                subtitle: 'Grow your word power',
+                color: AppTheme.orange,
+                icon: Icons.bolt,
+              ),
+              (
+                key: 'hard',
+                label: 'Hard',
+                subtitle: 'Take on a challenge',
+                color: AppTheme.red,
+                icon: Icons.local_fire_department,
+              ),
+              (
+                key: 'random',
+                label: 'Random',
+                subtitle: 'A surprise mix of words',
+                color: AppTheme.purple,
+                icon: Icons.shuffle,
+              ),
+            ].map(
+              (c) => Padding(
+                padding: const EdgeInsets.only(bottom: 24),
+                child: Column(
+                  children: [
+                    CarnivalButton(
+                      label: c.label,
+                      color: c.color,
+                      icon: c.icon,
+                      onPressed: () => context.go('/play/${c.key}'),
+                    ),
+                    const SizedBox(height: 7),
+                    Text(
+                      c.subtitle,
+                      style: const TextStyle(color: AppTheme.brown),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          const SizedBox(
-            height: 130,
-            child: CharacterPortrait(characterKey: 'kangaroo'),
-          ),
-        ],
+            const SizedBox(
+              height: 130,
+              child: CharacterPortrait(characterKey: 'kangaroo'),
+            ),
+          ],
+        ),
       ),
     ),
   );

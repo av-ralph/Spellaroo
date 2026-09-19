@@ -6,6 +6,7 @@ import '../providers/app_provider.dart';
 import '../services/audio_service.dart';
 import '../services/storage_service.dart';
 import '../utils/hash_utils.dart';
+import '../models/profile.dart';
 
 class ParentDashboardScreen extends ConsumerStatefulWidget {
   const ParentDashboardScreen({super.key});
@@ -49,101 +50,115 @@ class _ParentDashboardScreenState extends ConsumerState<ParentDashboardScreen> {
     final appState = ref.watch(appProvider);
     final profile = appState.profile;
 
-    if (!_authenticated) {
-      return AdventureScaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () {
-              AudioService.playClick();
-              context.go('/home');
-            },
-          ),
-          title: const Text('Parent Dashboard'),
-          backgroundColor: const Color(0xFF187EB2),
-          foregroundColor: Colors.white,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        AudioService.playClick();
+        context.go('/home');
+      },
+      child: _authenticated
+          ? _buildDashboard(context, profile)
+          : _buildPinEntry(context, profile),
+    );
+  }
+
+  Widget _buildPinEntry(BuildContext context, Profile? profile) {
+    return AdventureScaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            AudioService.playClick();
+            context.go('/home');
+          },
         ),
-        body: SizedBox(
-          child: Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(32),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.lock, size: 64, color: Colors.grey.shade300),
-                  const SizedBox(height: 24),
-                  const Text(
-                    'Enter Parent PIN',
-                    style: TextStyle(
-                      fontFamily: 'Baloo2',
-                      fontSize: 24,
-                      fontWeight: FontWeight.w800,
+        title: const Text('Parent Dashboard'),
+        backgroundColor: const Color(0xFF187EB2),
+        foregroundColor: Colors.white,
+      ),
+      body: SizedBox(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.lock, size: 64, color: Colors.grey.shade300),
+                const SizedBox(height: 24),
+                const Text(
+                  'Enter Parent PIN',
+                  style: TextStyle(
+                    fontFamily: 'Baloo2',
+                    fontSize: 24,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: _pinController,
+                  keyboardType: TextInputType.number,
+                  maxLength: 4,
+                  obscureText: true,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 12,
+                  ),
+                  decoration: InputDecoration(
+                    hintText: '••••',
+                    counterText: '',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(
+                        color: Color(0xFFFF8C00),
+                        width: 2,
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: _pinController,
-                    keyboardType: TextInputType.number,
-                    maxLength: 4,
-                    obscureText: true,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      letterSpacing: 12,
-                    ),
-                    decoration: InputDecoration(
-                      hintText: '••••',
-                      counterText: '',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide: const BorderSide(
-                          color: Color(0xFFFF8C00),
-                          width: 2,
-                        ),
-                      ),
-                    ),
-                    onSubmitted: (_) => _verifyPin(),
-                  ),
-                  if (_error.isNotEmpty) ...[
-                    const SizedBox(height: 8),
-                    Text(
-                      _error,
-                      style: const TextStyle(color: Color(0xFFFF5252)),
-                    ),
-                  ],
-                  const SizedBox(height: 16),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 48,
-                    child: ElevatedButton(
-                      onPressed: _verifyPin,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFF8C00),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: const Text(
-                        'Unlock',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
+                  onSubmitted: (_) => _verifyPin(),
+                ),
+                if (_error.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    _error,
+                    style: const TextStyle(color: Color(0xFFFF5252)),
                   ),
                 ],
-              ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: ElevatedButton(
+                    onPressed: _verifyPin,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFFF8C00),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
+                    child: const Text(
+                      'Unlock',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
-      );
-    }
+      ),
+    );
+  }
 
+  Widget _buildDashboard(BuildContext context, Profile? profile) {
     final progress = StorageService.getLevelProgressList();
     final missedWords = StorageService.getMissedWords();
     final completedCount = progress.where((p) => p.completed).length;
