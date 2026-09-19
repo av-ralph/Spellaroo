@@ -1,18 +1,22 @@
 # The path to the 'Generated.xcconfig' and 'generated_helper.rb'
-# We use a rescue block to handle cases where the file isn't generated yet
-begin
-  require File.expand_path(File.join('..', 'Flutter', 'generated_helper.rb'), __FILE__)
-rescue LoadError
-  # Fallback for newer Flutter versions where it might be in 'ephemeral'
+# This is the standard way Flutter loads its helper scripts
+platform :ios, '13.0'
+
+# Standard Flutter helper loading logic
+flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__)) rescue nil
+
+# If the above fails, we use a more manual require as a fallback
+if !defined?(flutter_install_all_ios_pods)
   begin
-    require File.expand_path(File.join('..', 'Flutter', 'ephemeral', 'generated_helper.rb'), __FILE__)
+    require File.expand_path(File.join('..', 'Flutter', 'generated_helper.rb'), __FILE__)
   rescue LoadError
-    puts "Warning: generated_helper.rb not found. Run 'flutter pub get' first."
+    begin
+      require File.expand_path(File.join('..', 'Flutter', 'ephemeral', 'generated_helper.rb'), __FILE__)
+    rescue LoadError
+      # This will be handled by the build tool usually
+    end
   end
 end
-
-# Uncomment this line to define a global platform for your project
-platform :ios, '13.0'
 
 # Flutter Google Fonts requires this
 install! 'cocoapods', :deterministic_uuids => false
