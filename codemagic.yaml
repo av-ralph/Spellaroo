@@ -18,7 +18,7 @@ workflows:
           flutter pub get
       - name: Build Android APK
         script: |
-          flutter build apk --release
+          flutter build apk --release --android-skip-build-dependency-validation
       - name: Build iOS IPA
         script: |
           # Note: This requires code signing setup in Codemagic UI
